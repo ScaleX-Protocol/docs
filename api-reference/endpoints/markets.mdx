@@ -1,0 +1,295 @@
+---
+title: 'Market Data Endpoints'
+description: 'Get real-time and historical market data for all ScaleX DEX trading pairs'
+---
+
+# Market Data Endpoints
+
+Access comprehensive market data including prices, volumes, order book depth, and trading pairs information.
+
+## Get All Markets
+
+Retrieve information about all available trading pairs on ScaleX DEX.
+
+<CodeGroup>
+
+```bash GET /api/markets
+curl "https://api.scalex.money/api/markets"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/markets');
+const markets = await response.json();
+```
+
+```python
+import requests
+
+response = requests.get('https://api.scalex.money/api/markets')
+markets = response.json()
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+[
+  {
+    "symbol": "ETHUSDC",
+    "baseAsset": "ETH",
+    "quoteAsset": "USDC",
+    "poolId": "0x123...",
+    "baseDecimals": 18,
+    "quoteDecimals": 6,
+    "volume": "1500000000000000000000",
+    "volumeInQuote": "3750000000",
+    "latestPrice": "2500000000",
+    "age": 86400,
+    "bidLiquidity": "500000000000000000000",
+    "askLiquidity": "300000000000000000000",
+    "totalLiquidityInQuote": "1250000000",
+    "createdAt": 1640995200
+  }
+]
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `symbol` | string | Trading pair symbol (e.g., "ETHUSDC") |
+| `baseAsset` | string | Base currency symbol |
+| `quoteAsset` | string | Quote currency symbol |
+| `poolId` | string | Unique pool identifier |
+| `baseDecimals` | number | Decimal places for base asset |
+| `quoteDecimals` | number | Decimal places for quote asset |
+| `volume` | string | 24h trading volume in base asset |
+| `volumeInQuote` | string | 24h trading volume in quote asset |
+| `latestPrice` | string | Most recent trade price |
+| `age` | number | Market age in seconds |
+| `bidLiquidity` | string | Total bid side liquidity |
+| `askLiquidity` | string | Total ask side liquidity |
+| `totalLiquidityInQuote` | string | Total liquidity in quote currency |
+| `createdAt` | number | Market creation timestamp |
+
+---
+
+## Get Trading Pairs
+
+Get simplified trading pair information.
+
+<CodeGroup>
+
+```bash GET /api/pairs
+curl "https://api.scalex.money/api/pairs"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/pairs');
+const pairs = await response.json();
+```
+
+</CodeGroup>
+
+### Response
+
+```json
+[
+  {
+    "symbol": "ETHUSDC",
+    "baseAsset": "ETH",
+    "quoteAsset": "USDC",
+    "poolId": "0x123...",
+    "baseDecimals": 18,
+    "quoteDecimals": 6
+  }
+]
+```
+
+---
+
+## Get 24hr Ticker Statistics
+
+Get 24-hour price and volume statistics for a specific trading pair.
+
+<CodeGroup>
+
+```bash GET /api/ticker/24hr
+curl "https://api.scalex.money/api/ticker/24hr?symbol=ETHUSDC"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/ticker/24hr?symbol=ETHUSDC');
+const ticker = await response.json();
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `symbol` | string | Yes | Trading pair symbol |
+
+### Response
+
+```json
+{
+  "symbol": "ETHUSDC",
+  "priceChange": "50.25",
+  "priceChangePercent": "2.05",
+  "weightedAvgPrice": "2475.80",
+  "prevClosePrice": "2450.00",
+  "lastPrice": "2500.25",
+  "lastQty": "1.5",
+  "bidPrice": "2499.50",
+  "askPrice": "2501.00",
+  "openPrice": "2450.00",
+  "highPrice": "2510.00",
+  "lowPrice": "2440.00",
+  "volume": "1500.75",
+  "quoteVolume": "3712500.00",
+  "openTime": 1640908800000,
+  "closeTime": 1640995200000,
+  "firstId": "1",
+  "lastId": "1250",
+  "count": 1250
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `symbol` | string | Trading pair symbol |
+| `priceChange` | string | 24h price change |
+| `priceChangePercent` | string | 24h price change percentage |
+| `weightedAvgPrice` | string | 24h weighted average price |
+| `prevClosePrice` | string | Previous day closing price |
+| `lastPrice` | string | Latest trade price |
+| `lastQty` | string | Latest trade quantity |
+| `bidPrice` | string | Best bid price |
+| `askPrice` | string | Best ask price |
+| `openPrice` | string | 24h opening price |
+| `highPrice` | string | 24h highest price |
+| `lowPrice` | string | 24h lowest price |
+| `volume` | string | 24h trading volume (base) |
+| `quoteVolume` | string | 24h trading volume (quote) |
+| `openTime` | number | 24h window open time |
+| `closeTime` | number | 24h window close time |
+| `firstId` | string | First trade ID in 24h |
+| `lastId` | string | Last trade ID in 24h |
+| `count` | number | Total trades in 24h |
+
+---
+
+## Get Current Price
+
+Get the current price for a specific trading pair.
+
+<CodeGroup>
+
+```bash GET /api/ticker/price
+curl "https://api.scalex.money/api/ticker/price?symbol=ETHUSDC"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/ticker/price?symbol=ETHUSDC');
+const price = await response.json();
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `symbol` | string | Yes | Trading pair symbol |
+
+### Response
+
+```json
+{
+  "symbol": "ETHUSDC",
+  "price": "2500.25"
+}
+```
+
+---
+
+## Get Order Book Depth
+
+Get current order book depth for a trading pair.
+
+<CodeGroup>
+
+```bash GET /api/depth
+curl "https://api.scalex.money/api/depth?symbol=ETHUSDC&limit=100"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/depth?symbol=ETHUSDC&limit=100');
+const depth = await response.json();
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `symbol` | string | Yes | - | Trading pair symbol |
+| `limit` | number | No | 100 | Number of price levels to return |
+
+### Response
+
+```json
+{
+  "lastUpdateId": 1640995200000,
+  "bids": [
+    ["2499.50", "1.5"],
+    ["2499.00", "2.3"],
+    ["2498.50", "0.8"]
+  ],
+  "asks": [
+    ["2501.00", "1.2"],
+    ["2501.50", "2.1"],
+    ["2502.00", "1.8"]
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `lastUpdateId` | number | Last update timestamp |
+| `bids` | array | Array of [price, quantity] for buy orders |
+| `asks` | array | Array of [price, quantity] for sell orders |
+
+<Note>
+Order book data is sorted by price with best bid (highest) first and best ask (lowest) first.
+</Note>
+
+---
+
+## Error Responses
+
+| Status Code | Error | Description |
+|-------------|-------|-------------|
+| 400 | Symbol parameter is required | Missing required symbol parameter |
+| 404 | Pool not found | Trading pair does not exist |
+| 500 | Failed to fetch market data | Internal server error |
+
+## Rate Limits
+
+Market data endpoints have the following rate limits:
+
+- **General market data**: 1200 requests per minute
+- **Order book depth**: 600 requests per minute  
+- **24hr ticker**: 300 requests per minute
+
+<Warning>
+Exceeding rate limits will result in HTTP 429 responses. Implement appropriate retry logic with exponential backoff.
+</Warning>

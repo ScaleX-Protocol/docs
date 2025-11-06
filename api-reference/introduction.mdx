@@ -1,33 +1,162 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'API Reference'
+description: 'Complete reference for ScaleX DEX API endpoints and data structures'
 ---
 
+# ScaleX DEX API Reference
+
+The ScaleX DEX API provides comprehensive access to market data, trading information, and user account details. Built on a high-performance indexer, our API delivers real-time and historical data for all trading pairs and user activities.
+
+## Base URL
+
+```
+https://api.scalex.money
+```
+
 <Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
+All API endpoints are RESTful and return JSON responses. The API supports both HTTP and HTTPS protocols.
 </Note>
 
-## Welcome
+## API Features
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+<CardGroup cols={2}>
+  <Card
+    title="Market Data"
+    icon="chart-line"
+    href="/api-reference/endpoints/markets"
+  >
+    Real-time price feeds, order book depth, and trading volumes
+  </Card>
+  <Card
+    title="Trading History"
+    icon="clock-rotate-left"
+    href="/api-reference/endpoints/trades"
+  >
+    Complete trade history and candlestick data with multiple timeframes
+  </Card>
+  <Card
+    title="Order Management"
+    icon="list-check"
+    href="/api-reference/endpoints/orders"
+  >
+    User order history, open orders, and order status tracking
+  </Card>
+  <Card
+    title="Account Data"
+    icon="user"
+    href="/api-reference/endpoints/user"
+  >
+    User balances, permissions, and account information
+  </Card>
+</CardGroup>
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+## Rate Limits
 
-## Authentication
+| Endpoint Type | Rate Limit | Window |
+|---------------|------------|--------|
+| Market Data | 1200 req/min | 1 minute |
+| User Data | 600 req/min | 1 minute |
+| Kline Data | 300 req/min | 1 minute |
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+## Response Format
 
+All API responses follow a consistent JSON structure:
+
+### Successful Response
 ```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+{
+  "symbol": "ETHUSDC",
+  "price": "2500.50",
+  "timestamp": 1640995200000
+}
 ```
+
+### Error Response
+```json
+{
+  "error": "Pool not found"
+}
+```
+
+## Data Types
+
+### Price Precision
+- All prices are returned as strings to maintain precision
+- Prices are denominated in the quote currency of the trading pair
+- Use appropriate decimal handling in your application
+
+### Timestamps
+- Unix timestamps in milliseconds for API responses
+- Unix timestamps in seconds for internal processing
+- All timestamps are in UTC
+
+### Order Status
+| Status | Description |
+|--------|-------------|
+| `NEW` | Order placed but not yet processed |
+| `OPEN` | Order active in the order book |
+| `PARTIALLY_FILLED` | Order partially executed |
+| `FILLED` | Order completely executed |
+| `CANCELLED` | Order cancelled by user |
+| `REJECTED` | Order rejected by system |
+
+### Order Types
+| Type | Description |
+|------|-------------|
+| `LIMIT` | Limit order with specified price |
+| `MARKET` | Market order for immediate execution |
+
+### Order Sides
+| Side | Description |
+|------|-------------|
+| `Buy` | Buy order (bid) |
+| `Sell` | Sell order (ask) |
+
+## Error Codes
+
+| HTTP Status | Error Type | Description |
+|-------------|------------|-------------|
+| 400 | Bad Request | Invalid parameters or missing required fields |
+| 404 | Not Found | Requested resource not found |
+| 408 | Timeout | Query took too long to process |
+| 500 | Internal Error | Server error or database issue |
+
+## API Integration
+
+<CardGroup cols={2}>
+  <Card
+    title="REST Endpoints"
+    icon="code"
+    href="/api-reference/endpoints/markets"
+  >
+    Detailed endpoint documentation and examples
+  </Card>
+  <Card
+    title="WebSocket Streams"
+    icon="broadcast-tower"
+    href="/developers/websockets"
+  >
+    Real-time data streaming API
+  </Card>
+</CardGroup>
+
+## WebSocket API
+
+For real-time data streams, ScaleX DEX also provides WebSocket connections:
+
+```javascript
+const ws = new WebSocket('wss://ws.scalex.money');
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log('Market update:', data);
+};
+```
+
+<Note>
+WebSocket documentation is available in the [Developer Tools](/developers/websockets) section.
+</Note>
+
+
+---
+
+Ready to start building with ScaleX DEX? Check out our [quickstart guide](/quickstart) or dive into the [endpoint documentation](/api-reference/endpoints/markets).

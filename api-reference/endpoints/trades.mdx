@@ -1,0 +1,295 @@
+---
+title: 'Trading Data Endpoints'
+description: 'Access trade history, candlestick data, and trading analytics'
+---
+
+# Trading Data Endpoints
+
+Get comprehensive trading data including recent trades, historical candlestick data, and trading analytics.
+
+## Get Recent Trades
+
+Retrieve recent trades for a specific trading pair.
+
+<CodeGroup>
+
+```bash GET /api/trades
+curl "https://api.scalex.money/api/trades?symbol=ETHUSDC&limit=100"
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/trades?symbol=ETHUSDC&limit=100');
+const trades = await response.json();
+```
+
+```python
+import requests
+
+response = requests.get('https://api.scalex.money/api/trades', {
+    'symbol': 'ETHUSDC',
+    'limit': 100
+})
+trades = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `symbol` | string | Yes | - | Trading pair symbol |
+| `limit` | number | No | 500 | Number of trades to return (max 500) |
+| `user` | string | No | - | Filter trades by user address |
+| `orderBy` | string | No | desc | Sort order: "asc" or "desc" |
+
+### Response
+
+```json
+[
+  {
+    "id": "trade_123456",
+    "price": "2500.25",
+    "qty": "1.5",
+    "time": 1640995200000,
+    "isBuyerMaker": false,
+    "isBestMatch": true
+  },
+  {
+    "id": "trade_123455",
+    "price": "2499.80",
+    "qty": "0.8",
+    "time": 1640995180000,
+    "isBuyerMaker": true,
+    "isBestMatch": true
+  }
+]
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique trade identifier |
+| `price` | string | Trade execution price |
+| `qty` | string | Trade quantity |
+| `time` | number | Trade timestamp (milliseconds) |
+| `isBuyerMaker` | boolean | True if buyer was the maker |
+| `isBestMatch` | boolean | Always true for ScaleX trades |
+
+### User-Specific Trades
+
+To get trades for a specific user, include the `user` parameter:
+
+<CodeGroup>
+
+```bash GET /api/trades (User-specific)
+curl "https://api.scalex.money/api/trades?symbol=ETHUSDC&user=0x1234...&limit=50"
+```
+
+```javascript
+const userTrades = await fetch(
+  'https://api.scalex.money/api/trades?symbol=ETHUSDC&user=0x1234...&limit=50'
+);
+```
+
+</CodeGroup>
+
+<Warning>
+User-specific trade queries have a 10-second timeout and are limited to 100 results to prevent long-running queries.
+</Warning>
+
+---
+
+## Get Kline/Candlestick Data
+
+Get candlestick data for technical analysis and charting.
+
+<CodeGroup>
+
+```bash GET /api/kline
+curl "https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1h&limit=100"
+```
+
+```javascript
+const response = await fetch(
+  'https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1h&limit=100'
+);
+const klines = await response.json();
+```
+
+```python
+response = requests.get('https://api.scalex.money/api/kline', {
+    'symbol': 'ETHUSDC',
+    'interval': '1h',
+    'startTime': 1640908800000,
+    'endTime': 1640995200000,
+    'limit': 100
+})
+klines = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `symbol` | string | Yes | - | Trading pair symbol |
+| `interval` | string | No | 1m | Kline interval |
+| `startTime` | number | No | 0 | Start time (milliseconds) |
+| `endTime` | number | No | now | End time (milliseconds) |
+| `limit` | number | No | 1000 | Number of klines (max 1000) |
+
+### Supported Intervals
+
+| Interval | Description |
+|----------|-------------|
+| `1m` | 1 minute |
+| `5m` | 5 minutes |
+| `30m` | 30 minutes |
+| `1h` | 1 hour |
+| `1d` | 1 day |
+
+### Response
+
+```json
+[
+  [
+    1640995200000,    // Open time
+    "2450.00",        // Open price
+    "2510.00",        // High price
+    "2440.00",        // Low price
+    "2500.25",        // Close price
+    "1500.75",        // Volume (base asset)
+    1640998800000,    // Close time
+    "3712500.00",     // Quote asset volume
+    1250,             // Number of trades
+    "750.50",         // Taker buy base asset volume
+    "1856250.00",     // Taker buy quote asset volume
+    "0"               // Unused field
+  ]
+]
+```
+
+### Kline Data Format
+
+Each kline is an array with the following structure:
+
+| Index | Field | Type | Description |
+|-------|-------|------|-------------|
+| 0 | Open Time | number | Kline open time (milliseconds) |
+| 1 | Open | string | Opening price |
+| 2 | High | string | Highest price |
+| 3 | Low | string | Lowest price |
+| 4 | Close | string | Closing price |
+| 5 | Volume | string | Base asset volume |
+| 6 | Close Time | number | Kline close time (milliseconds) |
+| 7 | Quote Volume | string | Quote asset volume |
+| 8 | Trades | number | Number of trades |
+| 9 | Taker Buy Base | string | Taker buy base asset volume |
+| 10 | Taker Buy Quote | string | Taker buy quote asset volume |
+| 11 | Ignore | string | Unused field (always "0") |
+
+### Time Range Queries
+
+You can specify custom time ranges for historical data:
+
+<CodeGroup>
+
+```bash Time Range Example
+# Get 1-hour klines for the last 24 hours
+curl "https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1h&startTime=1640908800000&endTime=1640995200000"
+```
+
+```javascript
+// Get daily klines for the last 30 days
+const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+const response = await fetch(
+  `https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1d&startTime=${thirtyDaysAgo}`
+);
+```
+
+</CodeGroup>
+
+---
+
+## Trading Analytics
+
+### Volume Analysis
+
+Use kline data to calculate trading volume over different periods:
+
+```javascript
+// Calculate 24h volume from hourly klines
+const hourlyKlines = await fetch(
+  'https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1h&limit=24'
+).then(r => r.json());
+
+const volume24h = hourlyKlines.reduce((sum, kline) => {
+  return sum + parseFloat(kline[5]); // Volume is at index 5
+}, 0);
+```
+
+### Price Change Calculation
+
+```javascript
+// Calculate price change from kline data
+const klines = await fetch(
+  'https://api.scalex.money/api/kline?symbol=ETHUSDC&interval=1d&limit=2'
+).then(r => r.json());
+
+if (klines.length >= 2) {
+  const currentPrice = parseFloat(klines[1][4]); // Close price
+  const previousPrice = parseFloat(klines[0][4]);
+  const priceChange = ((currentPrice - previousPrice) / previousPrice) * 100;
+  console.log(`Price change: ${priceChange.toFixed(2)}%`);
+}
+```
+
+---
+
+## WebSocket Real-Time Data
+
+For real-time trade updates, consider using the WebSocket API:
+
+```javascript
+const ws = new WebSocket('wss://ws.scalex.money');
+
+// Subscribe to trade updates
+ws.send(JSON.stringify({
+  method: 'SUBSCRIBE',
+  params: ['ETHUSDC@trade'],
+  id: 1
+}));
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.stream === 'ETHUSDC@trade') {
+    console.log('New trade:', data.data);
+  }
+};
+```
+
+---
+
+## Error Responses
+
+| Status Code | Error | Description |
+|-------------|-------|-------------|
+| 400 | Symbol parameter is required | Missing required symbol parameter |
+| 404 | Pool not found | Trading pair does not exist |
+| 408 | Query timeout | Query took too long (user-specific trades) |
+| 500 | Failed to fetch data | Internal server error |
+
+## Rate Limits
+
+Trading data endpoints have the following rate limits:
+
+- **Recent trades**: 600 requests per minute
+- **Kline data**: 300 requests per minute
+- **User-specific trades**: 100 requests per minute
+
+<Note>
+Kline data is cached and updated in real-time. Historical data older than 30 days may have reduced granularity.
+</Note>

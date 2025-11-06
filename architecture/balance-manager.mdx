@@ -1,0 +1,76 @@
+BalanceManager serves as the central hub of the Unified CLOB DEX-Lending Protocol, managing all asset allocation between trading and lending operations.
+
+## Core Functions
+
+### Asset Reception and Allocation
+When users deposit assets, BalanceManager automatically:
+- Mints synthetic tokens 1:1 for trading operations
+- Allocates real underlying assets to lending pools
+- Maintains separation between trading liquidity and lending capital
+
+### User Balance Management
+Tracks and manages user positions across:
+- Synthetic token balances for order book trading
+- Real asset holdings in lending pools
+- Accumulated yield entitlements
+- Borrowing capacity calculations
+
+### Yield Distribution Coordination
+Coordinates with LendingManager to:
+- Update global yield counters
+- Calculate user-specific yield through weighted checkpoints
+- Ensure fair yield distribution across all users
+
+## Technical Implementation
+
+### Smart Contract Structure
+```solidity
+contract BalanceManager {
+    // User synthetic token balances
+    mapping(address => mapping(address => uint256)) public syntheticBalances;
+    
+    // Yield tracking per user
+    mapping(address => mapping(address => uint256)) userYieldCheckpoints;
+    
+    // Global yield accumulator
+    mapping(address => uint256) public yieldPerToken;
+    
+    function deposit(address asset, uint256 amount) external {
+        // Mint synthetic tokens
+        // Allocate to lending
+        // Update checkpoints
+    }
+}
+```
+
+### Checkpoint Mechanism
+Implements weighted average checkpoints to ensure fair yield tracking:
+- Updates checkpoints on deposits and withdrawals
+- Maintains 1:1 synthetic token pegging
+- Separates yield accounting from trading operations
+
+## Integration Points
+
+### With OrderBook
+- Provides synthetic token liquidity for trading
+- Locks tokens during active orders
+- Updates balances on order execution
+
+### With LendingManager  
+- Supplies real assets for lending operations
+- Receives yield distributions
+- Calculates borrowing power
+
+### With Oracle
+- Receives price feeds for asset valuations
+- Updates collateral calculations
+- Ensures accurate pricing for all operations
+
+## Security Features
+
+- **Access Control**: Only authorized contracts can modify balances
+- **Reentrancy Protection**: Prevents recursive calls during operations
+- **Decimal Precision**: Handles different token decimals accurately
+- **Emergency Functions**: Circuit breakers for crisis situations
+
+BalanceManager is the critical coordination layer that enables seamless capital flow between trading and lending while maintaining perfect asset tracking and user position management.

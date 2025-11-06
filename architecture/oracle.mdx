@@ -1,0 +1,247 @@
+The Oracle system provides manipulation-resistant price feeds through multi-timeframe Time-Weighted Average Price (TWAP) calculations for different protocol operations.
+
+## TWAP Architecture
+
+### Time-Weighted Average Price Implementation
+The Oracle uses cumulative price tracking for manipulation-resistant TWAP calculations:
+```solidity
+struct PricePoint {
+    uint256 price;
+    uint256 timestamp;
+    uint256 cumulativePrice;
+    bool initialized;
+}
+
+struct TokenPriceData {
+    mapping(uint256 => PricePoint) priceHistory; // block.timestamp -> price
+    uint256 lastUpdateTime;
+    uint256 lastCumulativePrice;
+    uint256 oldestTimestamp;
+    uint256 maxHistorySize;
+    bool supported;
+}
+```
+
+### TWAP Calculation Method
+```solidity
+function getTWAP(address token, uint256 window) external view returns (uint256) {
+    TokenPriceData storage data = tokenPriceData[token];
+    uint256 targetTime = block.timestamp - window;
+    
+    uint256 currentCumulative = data.lastCumulativePrice;
+    uint256 currentTime = data.lastUpdateTime;
+    
+    // Find historical price point
+    PricePoint storage historical = data.priceHistory[targetTime];
+    
+    if (!historical.initialized) {
+        revert InsufficientPriceHistory(token, window);
+    }
+    
+    uint256 timeDiff = currentTime - historical.timestamp;
+    uint256 cumulativeDiff = currentCumulative - historical.cumulativePrice;
+    
+    return cumulativeDiff / timeDiff;
+}
+```
+
+### Multi-Timeframe Strategy
+```solidity
+function getPriceForCollateral(address token) external view returns (uint256) {
+    // Conservative 1-hour TWAP for collateral
+    return getTWAP(token, 1 hours);
+}
+
+function getPriceForBorrowing(address token) external view returns (uint256) {
+    // Medium-term 15-minute TWAP for borrowing
+    return getTWAP(token, 15 minutes);
+}
+
+function getPriceConfidence(address token) external view returns (uint256) {
+    // Returns confidence score based on trading volume and history
+    TokenPriceData storage data = tokenPriceData[token];
+    return calculateConfidence(token, data);
+}
+```
+
+### TWAP Timeframe Strategy
+
+**Timeframe Selection Logic:**
+- **Trading**: 5-minute TWAP for immediate execution
+- **Borrowing**: 15-minute TWAP for balanced pricing  
+- **Collateral**: 1-hour TWAP for conservative safety
+- **Critical Operations**: 6-hour TWAP for maximum protection
+
+**Price Stacking Effect Example:**
+```
+Market Crash Example:
+- Current Price: $1,000 → $800 (20% drop)
+- 5-minute TWAP: $1,000 → $950 (5% drop)
+- 15-minute TWAP: $1,000 → $930 (7% drop) 
+- 1-hour TWAP: $1,000 → $910 (9% drop)
+- 6-hour TWAP: $1,000 → $890 (11% drop)
+```
+
+**Benefits of Time-Diversified Pricing:**
+- **Fast response** for trading operations
+- **Stable collateral valuations** for lending
+- **Maximum protection** against manipulation
+- **Gradual price filtering** prevents flash crashes
+
+**Timeframe Selection Logic:**
+- **Trading**: 5-minute TWAP for immediate execution
+- **Borrowing**: 15-minute TWAP for balanced pricing
+- **Collateral**: 1-hour TWAP for conservative safety
+- **Critical Operations**: 6-hour TWAP for maximum protection
+
+**Price Stacking Effect:**
+```
+Example Market Crash:
+- Current Price: $1,000 → $800 (20% drop)
+- 5-minute TWAP: $1,000 → $950 (5% drop)
+- 15-minute TWAP: $1,000 → $930 (7% drop) 
+- 1-hour TWAP: $1,000 → $910 (9% drop)
+- 6-hour TWAP: $1,000 → $890 (11% drop)
+```
+
+### Price Update Validation
+```solidity
+function updatePrice(address token, uint256 newPrice) external {
+    if (msg.sender != owner() && !authorizedUpdaters[msg.sender]) {
+        revert UnauthorizedOracleUpdate(msg.sender);
+    }
+    
+    // Check minimum trade volume requirement
+    uint256 volume = IOrderBook(tokenOrderBooks[token]).getRecentVolume();
+    if (volume < MIN_TRADE_VOLUME) {
+        revert InsufficientTradeVolume(volume, MIN_TRADE_VOLUME);
+    }
+    
+    // Update price history
+    _updatePriceHistory(token, newPrice);
+    
+    emit PriceUpdate(token, newPrice, block.timestamp);
+}
+```
+
+### Constants and Configuration
+```solidity
+uint256 public constant MAX_HISTORY_SIZE = 1000;
+uint256 public constant STALE_PRICE_DELAY = 1 hours;
+uint256 public constant MIN_TRADE_VOLUME = 1000 * 1e6; // Minimum volume for reliable price
+```
+
+
+## Technical Implementation
+
+### Price Accumulation
+```solidity
+contract Oracle {
+    uint256 public cumulativePrice;
+    uint256 public lastUpdateTime;
+    uint256 public constant WINDOW_SIZE = 3600; // 1 hour
+    
+    function updatePrice(uint256 currentPrice) external {
+        uint256 timeElapsed = block.timestamp - lastUpdateTime;
+        cumulativePrice += currentPrice * timeElapsed;
+        lastUpdateTime = block.timestamp;
+    }
+}
+```
+
+### TWAP Calculation
+```solidity
+function getTWAP(uint32 period) external view returns (uint256) {
+    uint256 timeWindow = block.timestamp - lastUpdateTime;
+    return cumulativePrice / timeWindow;
+}
+```
+
+### Price Selection Logic
+```solidity
+function getPriceForOperation(OperationType opType) external view returns (uint256) {
+    if (opType == OperationType.TRADE) {
+        return getCurrentPrice();
+    } else if (opType == OperationType.BORROW) {
+        return getTWAP(15 * 60); // 15 minutes
+    } else if (opType == OperationType.COLLATERAL) {
+        uint256 oneHourTWAP = getTWAP(60 * 60);
+        uint256 sixHourTWAP = getTWAP(6 * 60 * 60);
+        return Math.min(oneHourTWAP, sixHourTWAP); // Conservative
+    }
+}
+```
+
+## Order Book Integration
+
+### Internal Price Generation
+Unlike external oracle dependencies, our system uses the protocol's own order book data:
+- **Native price feeds** from actual trading activity
+- **No external dependencies** for critical pricing
+- **Real-time accuracy** based on market transactions
+
+### Price Update Process
+```solidity
+function updateOracleFromTrade() external {
+    uint256 latestTradePrice = getLastTradePrice();
+    priceOracle.updatePrice(latestTradePrice);
+}
+```
+
+## Security Mechanisms
+
+### Price Validation
+Ensures price feeds remain within reasonable bounds:
+```solidity
+function validatePrice(uint256 newPrice) internal view {
+    uint256 maxDeviation = currentPrice * 10 / 100; // 10% max deviation
+    require(
+        newPrice <= currentPrice + maxDeviation,
+        "Price deviation too large"
+    );
+}
+```
+
+### Volatility Detection
+Automatic detection of unusual market conditions:
+```solidity
+function checkVolatility() external view returns (bool) {
+    uint256 shortTermTWAP = getTWAP(5 * 60);    // 5 minutes
+    uint256 longTermTWAP = getTWAP(60 * 60);    // 1 hour
+    uint256 deviation = abs(shortTermTWAP - longTermTWAP) * 100 / longTermTWAP;
+    
+    return deviation > 5; // 5% deviation threshold
+}
+```
+
+## Benefits Over Traditional Oracles
+
+### vs Spot Price Oracles
+| Feature | Spot Price | TWAP Oracle |
+|---------|------------|-------------|
+| Manipulation Resistance | Low | High |
+| Flash Crash Protection | None | Complete |
+| Price Stability | Volatile | Smoothed |
+| Consistency | Variable | Reliable |
+
+### vs External Oracles
+- **No external dependencies** for critical pricing
+- **Lower costs** (no subscription fees)
+- **Faster updates** (direct from trading activity)
+- **Greater reliability** (internal data source)
+
+## Integration Points
+
+### BalanceManager
+- Provides asset valuations for collateral calculations
+- Updates user borrowing power based on prices
+
+### LendingManager  
+- Supplies pricing for loan-to-value calculations
+- Triggers liquidations based on collateral values
+
+### OrderBook
+- Receives price feeds from trading activity
+- Validates prices against manipulation attempts
+
+The Oracle system ensures secure, manipulation-resistant pricing across all protocol operations while maintaining the flexibility needed for different use cases.

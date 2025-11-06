@@ -1,0 +1,414 @@
+---
+title: 'User Account Endpoints'
+description: 'Access user account information, balances, and cross-chain operations'
+---
+
+# User Account Endpoints
+
+Get comprehensive user account data including balances, permissions, cross-chain deposits, and token mappings.
+
+## Get Account Information
+
+Retrieve account details, balances, and permissions for a user address.
+
+<CodeGroup>
+
+```bash GET /api/account
+curl "https://api.scalex.money/api/account?address=0x1234..."
+```
+
+```javascript
+const response = await fetch('https://api.scalex.money/api/account?address=0x1234...');
+const account = await response.json();
+```
+
+```python
+import requests
+
+response = requests.get('https://api.scalex.money/api/account', {
+    'address': '0x1234...'
+})
+account = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `address` | string | Yes | User wallet address |
+
+### Response
+
+```json
+{
+  "makerCommission": 10,
+  "takerCommission": 20,
+  "buyerCommission": 0,
+  "sellerCommission": 0,
+  "canTrade": true,
+  "canWithdraw": true,
+  "canDeposit": true,
+  "updateTime": 1640995200000,
+  "accountType": "SPOT",
+  "balances": [
+    {
+      "asset": "ETH",
+      "free": "5.25000000",
+      "locked": "0.75000000"
+    },
+    {
+      "asset": "USDC",
+      "free": "1500.500000",
+      "locked": "250.000000"
+    }
+  ],
+  "permissions": ["SPOT"]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `makerCommission` | number | Maker fee rate (basis points) |
+| `takerCommission` | number | Taker fee rate (basis points) |
+| `buyerCommission` | number | Buyer commission (always 0) |
+| `sellerCommission` | number | Seller commission (always 0) |
+| `canTrade` | boolean | Trading permission status |
+| `canWithdraw` | boolean | Withdrawal permission status |
+| `canDeposit` | boolean | Deposit permission status |
+| `updateTime` | number | Last account update timestamp |
+| `accountType` | string | Account type (always "SPOT") |
+| `balances` | array | User token balances |
+| `permissions` | array | Account permissions |
+
+### Balance Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `asset` | string | Token symbol |
+| `free` | string | Available balance |
+| `locked` | string | Locked balance (in open orders) |
+
+---
+
+## Get Cross-Chain Deposits
+
+Retrieve cross-chain deposit history and status for a user.
+
+<CodeGroup>
+
+```bash GET /api/cross-chain-deposits
+curl "https://api.scalex.money/api/cross-chain-deposits?user=0x1234...&limit=50"
+```
+
+```javascript
+const response = await fetch(
+  'https://api.scalex.money/api/cross-chain-deposits?user=0x1234...&limit=50'
+);
+const deposits = await response.json();
+```
+
+```python
+response = requests.get('https://api.scalex.money/api/cross-chain-deposits', {
+    'user': '0x1234...',
+    'status': 'RELAYED',
+    'limit': 50
+})
+deposits = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `user` | string | Yes | - | User wallet address |
+| `status` | string | No | - | Filter by status |
+| `limit` | number | No | 100 | Number of deposits to return |
+
+### Status Values
+
+| Status | Description |
+|--------|-------------|
+| `PENDING` | Deposit initiated but not yet processed |
+| `SENT` | Deposit dispatched to destination chain |
+| `RELAYED` | Deposit successfully processed on destination |
+
+### Response
+
+```json
+{
+  "items": [
+    {
+      "id": "transfer-0x123...",
+      "amount": "1000000000",
+      "destinationBlockNumber": "12345678",
+      "destinationChainId": 421614,
+      "destinationTimestamp": 1640995300,
+      "destinationToken": null,
+      "destinationTransactionHash": "0xabc...",
+      "dispatchMessage": {
+        "blockNumber": "12345670",
+        "chainId": 11155111,
+        "id": "dispatch_123",
+        "messageId": "0xdef...",
+        "sender": "0x1234...",
+        "timestamp": 1640995200,
+        "type": "DISPATCH",
+        "transactionHash": "0x789..."
+      },
+      "direction": "DEPOSIT",
+      "messageId": "0xdef...",
+      "processMessage": {
+        "blockNumber": "12345678",
+        "chainId": 421614,
+        "id": "process_123",
+        "messageId": "0xdef...",
+        "sender": "0x1234...",
+        "timestamp": 1640995300,
+        "transactionHash": "0xabc...",
+        "type": "PROCESS"
+      },
+      "sourceToken": "0x456...",
+      "sourceChainId": 11155111,
+      "sourceBlockNumber": 12345670,
+      "sender": "0x1234...",
+      "recipient": "0x1234...",
+      "sourceTransactionHash": "0x789...",
+      "status": "RELAYED",
+      "timestamp": 1640995200
+    }
+  ]
+}
+```
+
+### Cross-Chain Deposit Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique transfer identifier |
+| `amount` | string | Deposit amount (wei) |
+| `destinationBlockNumber` | string | Destination chain block number |
+| `destinationChainId` | number | Destination chain ID |
+| `destinationTimestamp` | number | Destination processing timestamp |
+| `destinationTransactionHash` | string | Destination transaction hash |
+| `dispatchMessage` | object | Source chain message details |
+| `direction` | string | Transfer direction (always "DEPOSIT") |
+| `messageId` | string | Cross-chain message ID |
+| `processMessage` | object | Destination chain message details |
+| `sourceToken` | string | Source token address |
+| `sourceChainId` | number | Source chain ID |
+| `sourceBlockNumber` | number | Source chain block number |
+| `sender` | string | Deposit sender address |
+| `recipient` | string | Deposit recipient address |
+| `sourceTransactionHash` | string | Source transaction hash |
+| `status` | string | Deposit status |
+| `timestamp` | number | Deposit initiation timestamp |
+
+---
+
+## Get Token Mappings
+
+Retrieve cross-chain token mapping information.
+
+<CodeGroup>
+
+```bash GET /api/token-mappings
+curl "https://api.scalex.money/api/token-mappings?sourceChainId=11155111&targetChainId=421614"
+```
+
+```javascript
+const response = await fetch(
+  'https://api.scalex.money/api/token-mappings?sourceChainId=11155111&targetChainId=421614'
+);
+const mappings = await response.json();
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `sourceChainId` | number | No | - | Source chain ID filter |
+| `targetChainId` | number | No | - | Target chain ID filter |
+| `symbol` | string | No | - | Token symbol filter |
+| `isActive` | boolean | No | - | Active status filter |
+| `limit` | number | No | 100 | Number of mappings to return |
+
+### Response
+
+```json
+{
+  "items": [
+    {
+      "id": "mapping_123",
+      "sourceChainId": 11155111,
+      "sourceToken": "0x123...",
+      "targetChainId": 421614,
+      "syntheticToken": "0x456...",
+      "symbol": "USDC",
+      "sourceDecimals": 6,
+      "syntheticDecimals": 6,
+      "isActive": true,
+      "registeredAt": 1640995200,
+      "transactionId": "0x789...",
+      "blockNumber": "12345678",
+      "timestamp": 1640995200
+    }
+  ]
+}
+```
+
+### Token Mapping Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Mapping identifier |
+| `sourceChainId` | number | Source blockchain chain ID |
+| `sourceToken` | string | Source token contract address |
+| `targetChainId` | number | Target blockchain chain ID |
+| `syntheticToken` | string | Synthetic token contract address |
+| `symbol` | string | Token symbol |
+| `sourceDecimals` | number | Source token decimal places |
+| `syntheticDecimals` | number | Synthetic token decimal places |
+| `isActive` | boolean | Whether mapping is active |
+| `registeredAt` | number | Registration timestamp |
+| `transactionId` | string | Registration transaction hash |
+| `blockNumber` | string | Registration block number |
+| `timestamp` | number | Registration timestamp |
+
+---
+
+## Account Analysis Examples
+
+### Calculate Total Portfolio Value
+
+```javascript
+async function getPortfolioValue(userAddress, prices) {
+  const account = await fetch(
+    `https://api.scalex.money/api/account?address=${userAddress}`
+  ).then(r => r.json());
+  
+  let totalValue = 0;
+  
+  for (const balance of account.balances) {
+    const { asset, free, locked } = balance;
+    const totalBalance = parseFloat(free) + parseFloat(locked);
+    const price = prices[asset] || 0;
+    totalValue += totalBalance * price;
+  }
+  
+  return {
+    totalValue,
+    breakdown: account.balances.map(b => ({
+      asset: b.asset,
+      balance: parseFloat(b.free) + parseFloat(b.locked),
+      value: (parseFloat(b.free) + parseFloat(b.locked)) * (prices[b.asset] || 0)
+    }))
+  };
+}
+```
+
+### Monitor Cross-Chain Deposits
+
+```javascript
+async function monitorDeposits(userAddress) {
+  const deposits = await fetch(
+    `https://api.scalex.money/api/cross-chain-deposits?user=${userAddress}&limit=10`
+  ).then(r => r.json());
+  
+  return deposits.items.map(deposit => ({
+    id: deposit.id,
+    amount: deposit.amount,
+    status: deposit.status,
+    fromChain: deposit.sourceChainId,
+    toChain: deposit.destinationChainId,
+    age: Date.now() - (deposit.timestamp * 1000),
+    txHash: deposit.sourceTransactionHash
+  }));
+}
+```
+
+### Check Trading Fees
+
+```javascript
+async function getTradingFees(userAddress) {
+  const account = await fetch(
+    `https://api.scalex.money/api/account?address=${userAddress}`
+  ).then(r => r.json());
+  
+  return {
+    makerFee: account.makerCommission / 10000, // Convert basis points to percentage
+    takerFee: account.takerCommission / 10000,
+    makerFeePercent: `${account.makerCommission / 100}%`,
+    takerFeePercent: `${account.takerCommission / 100}%`
+  };
+}
+```
+
+---
+
+## Real-Time Account Updates
+
+For real-time balance updates, use the WebSocket API:
+
+```javascript
+const ws = new WebSocket('wss://ws.scalex.money');
+
+// Subscribe to account updates
+ws.send(JSON.stringify({
+  method: 'SUBSCRIBE',
+  params: [`${userAddress}@account`],
+  id: 1
+}));
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.stream && data.stream.includes('@account')) {
+    console.log('Account update:', data.data);
+    // Update UI with new balance information
+    updateAccountDisplay(data.data);
+  }
+};
+```
+
+---
+
+## Error Responses
+
+| Status Code | Error | Description |
+|-------------|-------|-------------|
+| 400 | Address parameter is required | Missing required address parameter |
+| 400 | User parameter is required | Missing required user parameter (deposits) |
+| 500 | Failed to fetch account information | Internal server error |
+
+## Rate Limits
+
+User account endpoints have the following rate limits:
+
+- **Account information**: 300 requests per minute per user
+- **Cross-chain deposits**: 200 requests per minute per user  
+- **Token mappings**: 600 requests per minute
+
+<Note>
+Account balance data is updated in real-time as trades execute and deposits/withdrawals are processed.
+</Note>
+
+## Chain IDs Reference
+
+Common chain IDs used in ScaleX DEX:
+
+| Chain | Chain ID | Description |
+|-------|----------|-------------|
+| Ethereum Sepolia | 11155111 | Ethereum testnet |
+| Arbitrum Sepolia | 421614 | Arbitrum testnet |
+| ScaleX Devnet | 1802 | ScaleX native devnet |
+
+<Warning>
+Cross-chain operations may take several minutes to complete depending on network congestion and bridge processing times.
+</Warning>
