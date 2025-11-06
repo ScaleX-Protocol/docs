@@ -1,9 +1,9 @@
 ---
 title: "Lesson Learned"
-description: "Building a "
+description: "Building a Safe-Reliable Protocol"
 ---
 
-## Lesson Learned
+## Past Cases
 
 1. Centralized Hyperliquid CLOB Vault (Jelly-jelly attack)
 
@@ -23,23 +23,20 @@ Attacker crafted a transaction that skipped any price quote step and directly to
 
 **Lesson :** No quotation/price discovery on vault activity
 
-Preventing these 3 last 3 major defi incident.
-CLOB with oracle
+## Traditional Lending Protocol Feature Issue
 
-## Getting Started
+**The Traders POV** 
 
-<Card
-  title="Start Earning"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+1. Borrowing Liquidation 
 
-## Why This Combo Created The "Perfect Duo"
+When traders borrow against their collateral, lending protocols force liquidate during market drops. Users watch helplessly as their collateral gets sold at crash prices, **unable to protect themselves** by strategically converting to stable assets beforehand.
 
-We All Agree That 
+2. Expensive Manual Repayment Cost
+
+When traders borrow asset and immediately swap to other asset, they must manually repay the loan at market rates (including gas fees, slippage etc). They **miss opportunities to automatically repay at prefferable price**, then losing the chance to reduce borrowing costs during market dips.
+
+## Our CLOB Protection Layer
+To prevent incidents like the last three major DeFi cases, we should ensure:
 
 <Columns cols={2}>
   <Card
@@ -72,7 +69,15 @@ We All Agree That
   </Card>
 </Columns>
 
-So, lending protocol are perfect to continously generate yield on idle capital while trading platform as solution for providing liquidity and protect user from liquidation
+## Our Solution
+
+ScaleX routes idle order capital to a lending pool until fill, dynamically manages utilization to protect lenders and borrowers, and shares interest back to lenders—aligning incentives while preserving orderbook liquidity, while allowing users to personalize orders at preferred prices. 
+    
+Orderbook liquidity is natural and user-driven; no internal vault manufactures orders.
+
+
+
+
 
 ## Create beautiful pages
 
