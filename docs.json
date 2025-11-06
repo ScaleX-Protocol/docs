@@ -6,8 +6,8 @@
     "light": "#FFFFFF",
     "dark": "#FFFFFF"
   },
-  "name": "docs",
-  "favicon": "/scalex-logo.jpeg",
+  "name": "ScaleX - Unified CLOB DEX Lending Protocol",
+  "favicon": "/logo/scalex-logo.svg",
   "navigation": {
     "tabs": [
       {
@@ -15,82 +15,46 @@
         "groups": [
           {
             "group": "Getting started",
-            "icon": "book-open-cover",
             "pages": [
               "genesis-story",
-              "lesson-learned",
-              {
-                "group": "Protocol Mechanics",
-                "icon": "settings-gear",
-                "pages": [
-                  "protocol-mechanics",
-                  {
-                    "group": "Lending Protocol",
-                    "icon": "book-open-cover",
-                    "pages": [
-                      "Lending Protocol/lend-and-borrow-pool",
-                      "Lending Protocol/ltv-and-liquidation",
-                      "Lending Protocol/health-factor",  
-                      "Lending Protocol/protocol-reward"
-                    ]
-                  },
-                  {
-                    "group": "CLOB",
-                    "icon": "book-open-cover",
-                    "pages": [
-                      "CLOB/orderbook",
-                      "CLOB/oracle"
-                    ]
-                  }
-                ]
-              },              
-              "quickstart",              
-              "development"
-              
+              "lesson-learned"
             ]
           },
-          {
-            "group": "Customization",
+            {
+            "group": "Architecture",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "architecture/overview",
+              "architecture/balance-manager",
+              "architecture/synthetic-token",
+              "architecture/orderbook",
+              "architecture/oracle",
+              "architecture/lending-manager"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Developer",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "WebSocket",
             "pages": [
-              "api-reference/introduction"
+              "developers/websockets"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Endpoints",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoints/markets",
+              "api-reference/endpoints/orders",
+              "api-reference/endpoints/trades",
+              "api-reference/endpoints/user"
+            ]
+          },
+          {
+            "group": "Smart Contracts",
+            "pages": [
+              "developers/smart-contracts"
             ]
           }
         ]
@@ -99,34 +63,16 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Github",
+          "href": "https://github.com/ScaleX-Protocol",
+          "icon": "github"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/scalex-logo.jpeg",
-    "dark": "/logo/scalex-logo.jpeg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    "light": "/logo/scalex-logo.svg",
+    "dark": "/logo/scalex-logo.svg"
   },
   "contextual": {
     "options": [

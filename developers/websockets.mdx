@@ -1,0 +1,970 @@
+---
+title: 'WebSocket API'
+description: 'Real-time data streams and WebSocket integration for ScaleX DEX'
+---
+
+# WebSocket API
+
+ScaleX DEX provides comprehensive WebSocket support for real-time market data, order updates, and yield tracking. The WebSocket API enables building responsive trading applications with live data feeds.
+
+## Connection Details
+
+### WebSocket Endpoint
+
+```
+wss://ws.scalex.money
+```
+
+### Connection Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `apiKey` | string | No | API key for enhanced rate limits |
+| `signature` | string | No | HMAC signature for private streams |
+| `timestamp` | number | No | Request timestamp |
+
+## Message Format
+
+All WebSocket messages use JSON format:
+
+```json
+{
+  "method": "SUBSCRIBE",
+  "params": ["ticker@ETHUSDC"],
+  "id": 1
+}
+```
+
+### Message Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `method` | string | Action type: SUBSCRIBE, UNSUBSCRIBE, or stream data |
+| `params` | array | Stream names or parameters |
+| `id` | number | Request ID for tracking responses |
+
+## Public Data Streams
+
+### Ticker Stream
+
+Real-time 24hr ticker statistics for all symbols.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Ticker">
+    ```javascript
+    // Subscribe to specific symbol
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["ticker@ETHUSDC"],
+      id: 1
+    }));
+    
+    // Subscribe to all symbols
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE", 
+      params: ["!ticker@arr"],
+      id: 2
+    }));
+    ```
+    
+    **Stream Name**: `ticker@{symbol}` or `!ticker@arr`
+  </Accordion>
+  
+  <Accordion title="Ticker Data Format">
+    ```json
+    {
+      "stream": "ticker@ETHUSDC",
+      "data": {
+        "symbol": "ETHUSDC",
+        "priceChange": "120.50",
+        "priceChangePercent": "5.12",
+        "weightedAvgPrice": "2456.78",
+        "lastPrice": "2475.00", 
+        "lastQty": "0.5",
+        "bidPrice": "2474.50",
+        "bidQty": "1.2",
+        "askPrice": "2475.50",
+        "askQty": "0.8",
+        "openPrice": "2354.50",
+        "highPrice": "2485.00",
+        "lowPrice": "2340.00",
+        "volume": "12456.78",
+        "quoteVolume": "30789123.45",
+        "openTime": 1640995200000,
+        "closeTime": 1641081599999,
+        "firstId": 28385,
+        "lastId": 28460,
+        "count": 76
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Trade Stream
+
+Real-time trade execution data.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Trades">
+    ```javascript
+    // Subscribe to trades for specific symbol
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["trade@ETHUSDC"],
+      id: 3
+    }));
+    
+    // Subscribe to all trades
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["!trade@arr"], 
+      id: 4
+    }));
+    ```
+    
+    **Stream Name**: `trade@{symbol}` or `!trade@arr`
+  </Accordion>
+  
+  <Accordion title="Trade Data Format">
+    ```json
+    {
+      "stream": "trade@ETHUSDC",
+      "data": {
+        "eventType": "trade",
+        "eventTime": 1641082345123,
+        "symbol": "ETHUSDC",
+        "tradeId": 12345,
+        "price": "2475.00",
+        "quantity": "0.5",
+        "buyerOrderId": 88,
+        "sellerOrderId": 102,
+        "tradeTime": 1641082345120,
+        "isBuyerMaker": true
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Order Book Stream
+
+Real-time order book depth updates.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Order Book">
+    ```javascript
+    // Partial depth (5 levels)
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["depth5@ETHUSDC"],
+      id: 5
+    }));
+    
+    // Full depth updates
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE", 
+      params: ["depth@ETHUSDC"],
+      id: 6
+    }));
+    
+    // Diff depth (only changes)
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["depthUpdate@ETHUSDC"],
+      id: 7
+    }));
+    ```
+    
+    **Stream Names**: 
+    - `depth@{symbol}` - Full order book
+    - `depth{levels}@{symbol}` - Partial depth (5, 10, 20 levels)
+    - `depthUpdate@{symbol}` - Incremental updates
+  </Accordion>
+  
+  <Accordion title="Order Book Data Format">
+    ```json
+    {
+      "stream": "depth@ETHUSDC",
+      "data": {
+        "eventType": "depthUpdate",
+        "eventTime": 1641082345123,
+        "symbol": "ETHUSDC",
+        "firstUpdateId": 157,
+        "finalUpdateId": 160,
+        "bids": [
+          ["2474.50", "1.2"],
+          ["2474.00", "0.8"],
+          ["2473.50", "2.1"]
+        ],
+        "asks": [
+          ["2475.50", "0.9"],
+          ["2476.00", "1.5"],
+          ["2476.50", "0.7"]
+        ]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Candlestick Stream
+
+Real-time OHLCV candlestick data.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Candlesticks">
+    ```javascript
+    // 1-minute candlesticks
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["kline_1m@ETHUSDC"],
+      id: 8
+    }));
+    
+    // 1-hour candlesticks
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["kline_1h@ETHUSDC"], 
+      id: 9
+    }));
+    ```
+    
+    **Intervals**: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+  </Accordion>
+  
+  <Accordion title="Candlestick Data Format">
+    ```json
+    {
+      "stream": "kline_1m@ETHUSDC",
+      "data": {
+        "eventType": "kline",
+        "eventTime": 1641082345123,
+        "symbol": "ETHUSDC",
+        "kline": {
+          "startTime": 1641082260000,
+          "closeTime": 1641082319999,
+          "symbol": "ETHUSDC",
+          "interval": "1m",
+          "firstTradeId": 100,
+          "lastTradeId": 200,
+          "open": "2470.00",
+          "close": "2475.00",
+          "high": "2478.00",
+          "low": "2469.50",
+          "volume": "25.5",
+          "numberOfTrades": 15,
+          "isClosed": false,
+          "quoteVolume": "63047.25",
+          "takerBuyBaseVolume": "12.8",
+          "takerBuyQuoteVolume": "31658.40"
+        }
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Private Data Streams
+
+### User Order Updates
+
+Real-time updates for user orders.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Order Updates">
+    ```javascript
+    // Subscribe to order updates
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["executionReport"],
+      id: 10
+    }));
+    ```
+  </Accordion>
+  
+  <Accordion title="Order Update Format">
+    ```json
+    {
+      "stream": "executionReport",
+      "data": {
+        "eventType": "executionReport",
+        "eventTime": 1641082345123,
+        "symbol": "ETHUSDC",
+        "clientOrderId": "user123_order456",
+        "side": "BUY",
+        "orderType": "LIMIT",
+        "timeInForce": "GTC",
+        "orderQuantity": "1.0",
+        "orderPrice": "2470.00",
+        "stopPrice": "0.00",
+        "icebergQuantity": "0.00",
+        "orderListId": -1,
+        "originalClientOrderId": "",
+        "currentExecutionType": "NEW",
+        "currentOrderStatus": "NEW",
+        "orderRejectReason": "NONE",
+        "orderId": 4,
+        "lastExecutedQuantity": "0.00",
+        "cumulativeFilledQuantity": "0.00",
+        "lastExecutedPrice": "0.00",
+        "commissionAmount": "0",
+        "commissionAsset": null,
+        "transactionTime": 1641082345120,
+        "tradeId": 0,
+        "isMaker": false
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Account Updates
+
+Real-time balance and position updates.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Account Updates">
+    ```javascript
+    // Subscribe to account updates
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE", 
+      params: ["outboundAccountPosition"],
+      id: 11
+    }));
+    ```
+  </Accordion>
+  
+  <Accordion title="Account Update Format">
+    ```json
+    {
+      "stream": "outboundAccountPosition",
+      "data": {
+        "eventType": "outboundAccountPosition",
+        "eventTime": 1641082345123,
+        "lastAccountUpdateTime": 1641082345120,
+        "balances": [
+          {
+            "asset": "ETH",
+            "free": "1.50000000",
+            "locked": "0.25000000"
+          },
+          {
+            "asset": "USDC", 
+            "free": "4750.00000000",
+            "locked": "250.00000000"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Yield Updates
+
+Real-time yield generation and rewards updates.
+
+<AccordionGroup>
+  <Accordion title="Subscribe to Yield Updates">
+    ```javascript
+    // Subscribe to yield updates
+    ws.send(JSON.stringify({
+      method: "SUBSCRIBE",
+      params: ["yieldUpdate"],
+      id: 12
+    }));
+    ```
+  </Accordion>
+  
+  <Accordion title="Yield Update Format">
+    ```json
+    {
+      "stream": "yieldUpdate",
+      "data": {
+        "eventType": "yieldUpdate",
+        "eventTime": 1641082345123,
+        "userId": "user123",
+        "totalYieldEarned": "15.75",
+        "dailyYield": "0.85",
+        "currentAPY": "6.25",
+        "gtxRewards": "2.5",
+        "positions": [
+          {
+            "symbol": "ETHUSDC",
+            "positionValue": "2475.00",
+            "yieldRate": "0.06",
+            "accruedYield": "8.25"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Implementation Examples
+
+### TypeScript WebSocket Client
+
+<CodeGroup>
+
+```typescript ScaleX WebSocket Client
+import WebSocket from 'ws';
+
+class ScaleXWebSocketClient {
+  private ws: WebSocket | null = null;
+  private subscriptions: Set<string> = new Set();
+  private messageHandlers: Map<string, Function[]> = new Map();
+  private reconnectInterval: number = 5000;
+  private isConnected: boolean = false;
+
+  constructor(
+    private url: string = 'wss://ws.scalex.money',
+    private apiKey?: string,
+    private apiSecret?: string
+  ) {}
+
+  async connect(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let connectionUrl = this.url;
+      
+      // Connect to WebSocket
+      
+      this.ws = new WebSocket(connectionUrl);
+      
+      this.ws.on('open', () => {
+        console.log('🔗 WebSocket connected');
+        this.isConnected = true;
+        
+        // Resubscribe to all streams
+        this.subscriptions.forEach(stream => {
+          this.subscribe(stream);
+        });
+        
+        resolve();
+      });
+      
+      this.ws.on('message', (data: string) => {
+        this.handleMessage(JSON.parse(data));
+      });
+      
+      this.ws.on('close', () => {
+        console.log('❌ WebSocket disconnected');
+        this.isConnected = false;
+        this.reconnect();
+      });
+      
+      this.ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+        reject(error);
+      });
+    });
+  }
+
+  private createSignature(timestamp: number): string {
+    const crypto = require('crypto');
+    const message = `timestamp=${timestamp}`;
+    return crypto
+      .createHmac('sha256', this.apiSecret)
+      .update(message)
+      .digest('hex');
+  }
+
+  private handleMessage(message: any) {
+    if (message.stream) {
+      // Stream data message
+      const handlers = this.messageHandlers.get(message.stream) || [];
+      handlers.forEach(handler => handler(message.data));
+    } else if (message.id) {
+      // Response to subscription/unsubscription
+      console.log('Subscription response:', message);
+    }
+  }
+
+  private reconnect() {
+    setTimeout(() => {
+      console.log('🔄 Reconnecting...');
+      this.connect().catch(console.error);
+    }, this.reconnectInterval);
+  }
+
+  subscribe(stream: string, handler?: Function): void {
+    this.subscriptions.add(stream);
+    
+    if (handler) {
+      if (!this.messageHandlers.has(stream)) {
+        this.messageHandlers.set(stream, []);
+      }
+      this.messageHandlers.get(stream)!.push(handler);
+    }
+
+    if (this.isConnected && this.ws) {
+      this.ws.send(JSON.stringify({
+        method: 'SUBSCRIBE',
+        params: [stream],
+        id: Date.now()
+      }));
+    }
+  }
+
+  unsubscribe(stream: string): void {
+    this.subscriptions.delete(stream);
+    this.messageHandlers.delete(stream);
+
+    if (this.isConnected && this.ws) {
+      this.ws.send(JSON.stringify({
+        method: 'UNSUBSCRIBE',
+        params: [stream],
+        id: Date.now()
+      }));
+    }
+  }
+
+  // Convenience methods for common streams
+  subscribeTicker(symbol: string, handler: (data: any) => void): void {
+    this.subscribe(`ticker@${symbol}`, handler);
+  }
+
+  subscribeTrades(symbol: string, handler: (data: any) => void): void {
+    this.subscribe(`trade@${symbol}`, handler);
+  }
+
+  subscribeOrderBook(symbol: string, levels: number = 20, handler?: (data: any) => void): void {
+    const stream = levels ? `depth${levels}@${symbol}` : `depth@${symbol}`;
+    this.subscribe(stream, handler);
+  }
+
+  subscribeKlines(symbol: string, interval: string, handler: (data: any) => void): void {
+    this.subscribe(`kline_${interval}@${symbol}`, handler);
+  }
+
+  // Private streams
+  subscribeUserOrders(handler: (data: any) => void): void {
+    this.subscribe('executionReport', handler);
+  }
+
+  subscribeAccountUpdates(handler: (data: any) => void): void {
+    this.subscribe('outboundAccountPosition', handler);
+  }
+
+  subscribeYieldUpdates(handler: (data: any) => void): void {
+    this.subscribe('yieldUpdate', handler);
+  }
+
+  disconnect(): void {
+    if (this.ws) {
+      this.ws.close();
+    }
+  }
+}
+
+// Usage
+const wsClient = new ScaleXWebSocketClient();
+
+wsClient.connect().then(() => {
+  // Subscribe to price updates
+  wsClient.subscribeTicker('ETHUSDC', (ticker) => {
+    console.log(`ETH price: $${ticker.lastPrice} (${ticker.priceChangePercent}%)`);
+  });
+
+  // Subscribe to trades
+  wsClient.subscribeTrades('ETHUSDC', (trade) => {
+    console.log(`Trade: ${trade.quantity} ETH at $${trade.price}`);
+  });
+
+  // Subscribe to order book
+  wsClient.subscribeOrderBook('ETHUSDC', 5, (depth) => {
+    console.log(`Best bid: $${depth.bids[0][0]}, Best ask: $${depth.asks[0][0]}`);
+  });
+});
+```
+
+```python Python WebSocket Client
+import asyncio
+import websockets
+import json
+import hmac
+import hashlib
+import time
+from typing import Dict, List, Callable, Optional
+
+class ScaleXWebSocketClient:
+    def __init__(self, url: str = "wss://ws.scalex.money", api_key: Optional[str] = None, api_secret: Optional[str] = None):
+        self.url = url
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.ws = None
+        self.subscriptions: set = set()
+        self.message_handlers: Dict[str, List[Callable]] = {}
+        self.is_connected = False
+        
+    async def connect(self):
+        connection_url = self.url
+        
+        # Connect to WebSocket
+        
+        try:
+            self.ws = await websockets.connect(connection_url)
+            self.is_connected = True
+            print("🔗 WebSocket connected")
+            
+            # Start message handling
+            asyncio.create_task(self._message_handler())
+            
+            # Resubscribe to all streams
+            for stream in self.subscriptions:
+                await self._send_subscribe(stream)
+                
+        except Exception as e:
+            print(f"❌ Connection failed: {e}")
+            self.is_connected = False
+            
+    def _create_signature(self, timestamp: int) -> str:
+        message = f"timestamp={timestamp}"
+        return hmac.new(
+            self.api_secret.encode('utf-8'),
+            message.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+    
+    async def _message_handler(self):
+        try:
+            async for message in self.ws:
+                data = json.loads(message)
+                await self._handle_message(data)
+        except websockets.exceptions.ConnectionClosed:
+            print("❌ WebSocket disconnected")
+            self.is_connected = False
+            await self._reconnect()
+        except Exception as e:
+            print(f"Message handling error: {e}")
+    
+    async def _handle_message(self, message: dict):
+        if "stream" in message:
+            # Stream data message
+            stream = message["stream"]
+            if stream in self.message_handlers:
+                for handler in self.message_handlers[stream]:
+                    await handler(message["data"])
+        elif "id" in message:
+            # Response to subscription/unsubscription
+            print(f"Subscription response: {message}")
+    
+    async def _reconnect(self):
+        await asyncio.sleep(5)
+        print("🔄 Reconnecting...")
+        await self.connect()
+    
+    async def _send_subscribe(self, stream: str):
+        if self.is_connected and self.ws:
+            message = {
+                "method": "SUBSCRIBE",
+                "params": [stream],
+                "id": int(time.time() * 1000)
+            }
+            await self.ws.send(json.dumps(message))
+    
+    async def subscribe(self, stream: str, handler: Optional[Callable] = None):
+        self.subscriptions.add(stream)
+        
+        if handler:
+            if stream not in self.message_handlers:
+                self.message_handlers[stream] = []
+            self.message_handlers[stream].append(handler)
+        
+        await self._send_subscribe(stream)
+    
+    async def unsubscribe(self, stream: str):
+        self.subscriptions.discard(stream)
+        self.message_handlers.pop(stream, None)
+        
+        if self.is_connected and self.ws:
+            message = {
+                "method": "UNSUBSCRIBE", 
+                "params": [stream],
+                "id": int(time.time() * 1000)
+            }
+            await self.ws.send(json.dumps(message))
+    
+    # Convenience methods
+    async def subscribe_ticker(self, symbol: str, handler: Callable):
+        await self.subscribe(f"ticker@{symbol}", handler)
+    
+    async def subscribe_trades(self, symbol: str, handler: Callable):
+        await self.subscribe(f"trade@{symbol}", handler)
+    
+    async def subscribe_order_book(self, symbol: str, levels: int = 20, handler: Optional[Callable] = None):
+        stream = f"depth{levels}@{symbol}" if levels else f"depth@{symbol}"
+        await self.subscribe(stream, handler)
+    
+    async def subscribe_klines(self, symbol: str, interval: str, handler: Callable):
+        await self.subscribe(f"kline_{interval}@{symbol}", handler)
+    
+    # Private streams
+    async def subscribe_user_orders(self, handler: Callable):
+        await self.subscribe("executionReport", handler)
+    
+    async def subscribe_account_updates(self, handler: Callable):
+        await self.subscribe("outboundAccountPosition", handler)
+    
+    async def subscribe_yield_updates(self, handler: Callable):
+        await self.subscribe("yieldUpdate", handler)
+    
+    async def disconnect(self):
+        if self.ws:
+            await self.ws.close()
+
+# Usage
+async def main():
+    ws_client = ScaleXWebSocketClient()
+    await ws_client.connect()
+    
+    # Subscribe to price updates
+    async def handle_ticker(ticker):
+        print(f"ETH price: ${ticker['lastPrice']} ({ticker['priceChangePercent']}%)")
+    
+    await ws_client.subscribe_ticker("ETHUSDC", handle_ticker)
+    
+    # Subscribe to trades
+    async def handle_trade(trade):
+        print(f"Trade: {trade['quantity']} ETH at ${trade['price']}")
+    
+    await ws_client.subscribe_trades("ETHUSDC", handle_trade)
+    
+    # Keep running
+    await asyncio.sleep(60)
+    await ws_client.disconnect()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+</CodeGroup>
+
+## Advanced Features
+
+### Rate Limiting
+
+WebSocket connections are subject to rate limits:
+
+| Connection Type | Limit | Notes |
+|----------------|-------|-------|
+| **Public Streams** | 5 connections per IP | Market data only |
+| **Private Streams** | 3 connections per API key | User data streams |
+| **Messages/Second** | 100 per connection | Subscription requests |
+
+### Connection Management
+
+<CodeGroup>
+
+```typescript Connection Health
+class ConnectionManager {
+  private lastPingTime: number = 0;
+  private pingInterval: NodeJS.Timeout | null = null;
+  
+  startHealthCheck(ws: WebSocket): void {
+    this.pingInterval = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        this.lastPingTime = Date.now();
+        ws.ping();
+      }
+    }, 30000); // Ping every 30 seconds
+    
+    ws.on('pong', () => {
+      const latency = Date.now() - this.lastPingTime;
+      console.log(`📡 Ping: ${latency}ms`);
+    });
+  }
+  
+  stopHealthCheck(): void {
+    if (this.pingInterval) {
+      clearInterval(this.pingInterval);
+    }
+  }
+}
+```
+
+```python Python Health Check
+import asyncio
+import time
+
+class ConnectionManager:
+    def __init__(self, ws_client):
+        self.ws_client = ws_client
+        self.last_ping_time = 0
+        self.health_check_task = None
+    
+    async def start_health_check(self):
+        self.health_check_task = asyncio.create_task(self._health_check_loop())
+    
+    async def _health_check_loop(self):
+        while self.ws_client.is_connected:
+            try:
+                if self.ws_client.ws:
+                    self.last_ping_time = time.time()
+                    await self.ws_client.ws.ping()
+                    
+                await asyncio.sleep(30)  # Ping every 30 seconds
+            except Exception as e:
+                print(f"Health check error: {e}")
+                break
+    
+    def stop_health_check(self):
+        if self.health_check_task:
+            self.health_check_task.cancel()
+```
+
+</CodeGroup>
+
+### Stream Aggregation
+
+Combine multiple streams for complex analysis:
+
+```typescript
+class StreamAggregator {
+  private tickerData: Map<string, any> = new Map();
+  private tradeData: Map<string, any[]> = new Map();
+  
+  constructor(private wsClient: ScaleXWebSocketClient) {}
+  
+  startAggregation(symbols: string[]): void {
+    symbols.forEach(symbol => {
+      // Subscribe to ticker
+      this.wsClient.subscribeTicker(symbol, (ticker) => {
+        this.tickerData.set(symbol, ticker);
+        this.updateAnalysis(symbol);
+      });
+      
+      // Subscribe to trades
+      this.wsClient.subscribeTrades(symbol, (trade) => {
+        if (!this.tradeData.has(symbol)) {
+          this.tradeData.set(symbol, []);
+        }
+        
+        const trades = this.tradeData.get(symbol)!;
+        trades.push(trade);
+        
+        // Keep only last 100 trades
+        if (trades.length > 100) {
+          trades.shift();
+        }
+        
+        this.updateAnalysis(symbol);
+      });
+    });
+  }
+  
+  private updateAnalysis(symbol: string): void {
+    const ticker = this.tickerData.get(symbol);
+    const trades = this.tradeData.get(symbol) || [];
+    
+    if (ticker && trades.length > 0) {
+      // Calculate volume-weighted average price
+      const vwap = this.calculateVWAP(trades);
+      
+      // Detect large orders
+      const largeOrders = trades.filter(t => parseFloat(t.quantity) > 1.0);
+      
+      console.log(`${symbol} Analysis:`, {
+        currentPrice: ticker.lastPrice,
+        vwap: vwap.toFixed(2),
+        largeOrdersCount: largeOrders.length,
+        momentum: this.calculateMomentum(trades)
+      });
+    }
+  }
+  
+  private calculateVWAP(trades: any[]): number {
+    const totalValue = trades.reduce((sum, trade) => 
+      sum + (parseFloat(trade.price) * parseFloat(trade.quantity)), 0
+    );
+    const totalVolume = trades.reduce((sum, trade) => 
+      sum + parseFloat(trade.quantity), 0
+    );
+    
+    return totalVolume > 0 ? totalValue / totalVolume : 0;
+  }
+  
+  private calculateMomentum(trades: any[]): string {
+    if (trades.length < 10) return 'neutral';
+    
+    const recent = trades.slice(-10);
+    const buyVolume = recent
+      .filter(t => !t.isBuyerMaker)
+      .reduce((sum, t) => sum + parseFloat(t.quantity), 0);
+    const sellVolume = recent
+      .filter(t => t.isBuyerMaker)
+      .reduce((sum, t) => sum + parseFloat(t.quantity), 0);
+    
+    const ratio = buyVolume / (buyVolume + sellVolume);
+    
+    if (ratio > 0.6) return 'bullish';
+    if (ratio < 0.4) return 'bearish';
+    return 'neutral';
+  }
+}
+```
+
+## Error Handling
+
+### Common Error Codes
+
+| Code | Message | Solution |
+|------|---------|----------|
+| `1000` | Normal closure | Connection closed normally |
+| `1006` | Abnormal closure | Network issue, reconnect |
+| `4001` | Invalid message format | Check JSON format |
+| `4002` | Invalid stream name | Verify stream syntax |
+| `4003` | Connection failed | Check connection parameters |
+| `4004` | Rate limit exceeded | Reduce request frequency |
+
+### Robust Error Handling
+
+```typescript
+class RobustWebSocketClient extends ScaleXWebSocketClient {
+  private maxReconnectAttempts: number = 10;
+  private reconnectAttempts: number = 0;
+  
+  protected reconnect(): void {
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      console.error('❌ Max reconnection attempts reached');
+      return;
+    }
+    
+    this.reconnectAttempts++;
+    const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+    
+    console.log(`🔄 Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
+    
+    setTimeout(() => {
+      this.connect().then(() => {
+        this.reconnectAttempts = 0; // Reset on successful connection
+      }).catch(console.error);
+    }, delay);
+  }
+}
+```
+
+---
+
+<CardGroup cols={2}>
+  <Card
+    title="Smart Contracts"
+    icon="code"
+    href="/developers/smart-contracts"
+  >
+    Integrate with ScaleX smart contracts
+  </Card>
+  <Card
+    title="API Reference"
+    icon="book"
+    href="/api-reference/introduction"
+  >
+    REST API for complementary data
+  </Card>
+</CardGroup>
+
+<Info>
+The WebSocket API provides real-time access to all ScaleX DEX data streams. Combine with yield tracking to build applications that monitor both trading and earning opportunities in real-time.
+</Info>

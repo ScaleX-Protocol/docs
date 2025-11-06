@@ -1,0 +1,331 @@
+---
+title: 'Order Management Endpoints'
+description: 'Query and manage user orders, track order history and status'
+---
+
+# Order Management Endpoints
+
+Access comprehensive order data including open orders, order history, and detailed order information for user accounts.
+
+## Get All Orders
+
+Retrieve complete order history for a user address.
+
+<CodeGroup>
+
+```bash GET /api/allOrders
+curl "https://api.scalex.money/api/allOrders?address=0x1234...&symbol=ETHUSDC&limit=100"
+```
+
+```javascript
+const response = await fetch(
+  'https://api.scalex.money/api/allOrders?address=0x1234...&symbol=ETHUSDC&limit=100'
+);
+const orders = await response.json();
+```
+
+```python
+import requests
+
+response = requests.get('https://api.scalex.money/api/allOrders', {
+    'address': '0x1234...',
+    'symbol': 'ETHUSDC',
+    'limit': 100
+})
+orders = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `address` | string | Yes | - | User wallet address |
+| `symbol` | string | No | - | Filter by trading pair |
+| `limit` | number | No | 500 | Number of orders (max 1000) |
+
+### Response
+
+```json
+[
+  {
+    "symbol": "ETHUSDC",
+    "orderId": "12345678",
+    "orderListId": -1,
+    "clientOrderId": "user_order_123",
+    "price": "2500.00",
+    "origQty": "1.5",
+    "executedQty": "0.8",
+    "cumulativeQuoteQty": "2000.00",
+    "status": "PARTIALLY_FILLED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0",
+    "icebergQty": "0",
+    "time": 1640995200000,
+    "updateTime": 1640995250000,
+    "isWorking": true,
+    "origQuoteOrderQty": "0"
+  }
+]
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `symbol` | string | Trading pair symbol |
+| `orderId` | string | Unique order ID |
+| `orderListId` | number | Order list ID (always -1) |
+| `clientOrderId` | string | Client-provided order ID |
+| `price` | string | Order price |
+| `origQty` | string | Original order quantity |
+| `executedQty` | string | Executed quantity |
+| `cumulativeQuoteQty` | string | Total executed value in quote currency |
+| `status` | string | Order status |
+| `timeInForce` | string | Time in force (always "GTC") |
+| `type` | string | Order type (LIMIT/MARKET) |
+| `side` | string | Order side (BUY/SELL) |
+| `stopPrice` | string | Stop price (always "0" for spot trading) |
+| `icebergQty` | string | Iceberg quantity (always "0") |
+| `time` | number | Order creation timestamp |
+| `updateTime` | number | Last update timestamp |
+| `isWorking` | boolean | Whether order is active |
+| `origQuoteOrderQty` | string | Original quote order quantity |
+
+---
+
+## Get Open Orders
+
+Retrieve only active orders for a user address.
+
+<CodeGroup>
+
+```bash GET /api/openOrders
+curl "https://api.scalex.money/api/openOrders?address=0x1234...&symbol=ETHUSDC"
+```
+
+```javascript
+const response = await fetch(
+  'https://api.scalex.money/api/openOrders?address=0x1234...&symbol=ETHUSDC'
+);
+const openOrders = await response.json();
+```
+
+```python
+response = requests.get('https://api.scalex.money/api/openOrders', {
+    'address': '0x1234...',
+    'symbol': 'ETHUSDC'
+})
+open_orders = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `address` | string | Yes | - | User wallet address |
+| `symbol` | string | No | - | Filter by trading pair |
+
+### Response
+
+Returns the same format as `/api/allOrders` but only includes orders with status:
+- `NEW`
+- `OPEN` 
+- `PARTIALLY_FILLED`
+
+### Order Status Types
+
+| Status | Description |
+|--------|-------------|
+| `NEW` | Order submitted but not yet active |
+| `OPEN` | Order active in the order book |
+| `PARTIALLY_FILLED` | Order partially executed |
+| `FILLED` | Order completely executed |
+| `CANCELLED` | Order cancelled by user |
+| `REJECTED` | Order rejected by system |
+
+---
+
+## Order Management Examples
+
+### Check Order Status
+
+```javascript
+async function checkOrderStatus(userAddress, orderId) {
+  const allOrders = await fetch(
+    `https://api.scalex.money/api/allOrders?address=${userAddress}&limit=1000`
+  ).then(r => r.json());
+  
+  const order = allOrders.find(o => o.orderId === orderId);
+  
+  if (order) {
+    return {
+      status: order.status,
+      filled: parseFloat(order.executedQty),
+      remaining: parseFloat(order.origQty) - parseFloat(order.executedQty),
+      fillPercentage: (parseFloat(order.executedQty) / parseFloat(order.origQty)) * 100
+    };
+  }
+  
+  throw new Error('Order not found');
+}
+```
+
+### Calculate Order Fill Rate
+
+```javascript
+async function getUserFillRate(userAddress, days = 7) {
+  const allOrders = await fetch(
+    `https://api.scalex.money/api/allOrders?address=${userAddress}&limit=1000`
+  ).then(r => r.json());
+  
+  const cutoffTime = Date.now() - (days * 24 * 60 * 60 * 1000);
+  const recentOrders = allOrders.filter(o => o.time > cutoffTime);
+  
+  const totalOrders = recentOrders.length;
+  const filledOrders = recentOrders.filter(o => 
+    o.status === 'FILLED' || o.status === 'PARTIALLY_FILLED'
+  ).length;
+  
+  return {
+    totalOrders,
+    filledOrders,
+    fillRate: totalOrders > 0 ? (filledOrders / totalOrders) * 100 : 0
+  };
+}
+```
+
+### Monitor Active Orders
+
+```javascript
+async function monitorActiveOrders(userAddress) {
+  const openOrders = await fetch(
+    `https://api.scalex.money/api/openOrders?address=${userAddress}`
+  ).then(r => r.json());
+  
+  return openOrders.map(order => ({
+    id: order.orderId,
+    symbol: order.symbol,
+    side: order.side,
+    price: order.price,
+    remaining: (parseFloat(order.origQty) - parseFloat(order.executedQty)).toString(),
+    progress: (parseFloat(order.executedQty) / parseFloat(order.origQty)) * 100,
+    ageMinutes: (Date.now() - order.time) / (1000 * 60)
+  }));
+}
+```
+
+---
+
+## Advanced Queries
+
+### Filter by Symbol
+
+Get orders for a specific trading pair:
+
+<CodeGroup>
+
+```bash Symbol Filter
+curl "https://api.scalex.money/api/allOrders?address=0x1234...&symbol=ETHUSDC"
+```
+
+```javascript
+const ethOrders = await fetch(
+  'https://api.scalex.money/api/allOrders?address=0x1234...&symbol=ETHUSDC'
+);
+```
+
+</CodeGroup>
+
+### Pagination
+
+For users with many orders, use pagination:
+
+```javascript
+async function getAllUserOrders(userAddress) {
+  let allOrders = [];
+  let limit = 1000;
+  let offset = 0;
+  
+  while (true) {
+    const response = await fetch(
+      `https://api.scalex.money/api/allOrders?address=${userAddress}&limit=${limit}`
+    );
+    const orders = await response.json();
+    
+    if (orders.length === 0) break;
+    
+    allOrders = allOrders.concat(orders);
+    
+    if (orders.length < limit) break;
+    
+    // Use the last order's timestamp for pagination
+    const lastOrderTime = orders[orders.length - 1].time;
+    // Note: API doesn't support time-based pagination yet
+    // This is a conceptual example
+    break;
+  }
+  
+  return allOrders;
+}
+```
+
+---
+
+## Real-Time Order Updates
+
+For real-time order status updates, use the WebSocket API:
+
+```javascript
+const ws = new WebSocket('wss://ws.scalex.money');
+
+// Subscribe to user order updates
+ws.send(JSON.stringify({
+  method: 'SUBSCRIBE',
+  params: [`${userAddress}@order`],
+  id: 1
+}));
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  if (data.stream && data.stream.includes('@order')) {
+    console.log('Order update:', data.data);
+    // Handle order status change
+    updateOrderDisplay(data.data);
+  }
+};
+```
+
+---
+
+## Error Responses
+
+| Status Code | Error | Description |
+|-------------|-------|-------------|
+| 400 | Address parameter is required | Missing required address parameter |
+| 404 | Pool not found | Invalid symbol parameter |
+| 500 | Failed to fetch orders | Internal server error |
+
+## Rate Limits
+
+Order management endpoints have the following rate limits:
+
+- **All orders**: 300 requests per minute per user
+- **Open orders**: 600 requests per minute per user
+
+<Warning>
+Order queries for users with large order histories may take longer to process. Consider using symbol filters and reasonable limits to improve performance.
+</Warning>
+
+## Best Practices
+
+1. **Use Symbol Filters**: When possible, filter by specific trading pairs to reduce response size
+2. **Reasonable Limits**: Use appropriate limits based on your use case (default 500 is usually sufficient)
+3. **Cache Results**: Cache order data client-side and refresh periodically rather than polling continuously
+4. **WebSocket for Real-Time**: Use WebSocket connections for real-time order updates instead of frequent polling
+5. **Error Handling**: Implement proper error handling for network issues and API errors
