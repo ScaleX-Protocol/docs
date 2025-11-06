@@ -1,0 +1,150 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "palm",  
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#FFFFFF",
+    "dark": "#FFFFFF"
+  },
+  "name": "docs",
+  "favicon": "/scalex-logo.jpeg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting started",
+            "icon": "book-open-cover",
+            "pages": [
+              "genesis-story",
+              {
+                "group": "Protocol Mechanics",
+                "icon": "settings-gear",
+                "pages": [
+                  "protocol-mechanics",
+                  {
+                    "group": "Lending Protocol",
+                    "icon": "book-open-cover",
+                    "pages": [
+                      "Lending Protocol/lend-and-borrow-pool",
+                      "Lending Protocol/ltv-and-liquidation",
+                      "Lending Protocol/health-factor",  
+                      "Lending Protocol/protocol-reward"
+                    ]
+                  },
+                  {
+                    "group": "CLOB",
+                    "icon": "book-open-cover",
+                    "pages": [
+                      "CLOB/orderbook",
+                      "CLOB/oracle"
+                    ]
+                  }
+                ]
+              },              
+              "quickstart",
+              "lesson-learned",
+              "development"
+              
+            ]
+          },
+          {
+            "group": "Customization",
+            "pages": [
+              "essentials/settings",
+              "essentials/navigation"
+            ]
+          },
+          {
+            "group": "Writing content",
+            "pages": [
+              "essentials/markdown",
+              "essentials/code",
+              "essentials/images",
+              "essentials/reusable-snippets"
+            ]
+          },
+          {
+            "group": "AI tools",
+            "pages": [
+              "ai-tools/cursor",
+              "ai-tools/claude-code",
+              "ai-tools/windsurf"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "API documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoint examples",
+            "pages": [
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete",
+              "api-reference/endpoint/webhook"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://mintlify.com/docs",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://mintlify.com/blog",
+          "icon": "newspaper"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/scalex-logo.jpeg",
+    "dark": "/logo/scalex-logo.jpeg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:hi@mintlify.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://dashboard.mintlify.com"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+---
+title: "Max LTV"
+description: "The maximum borrowing power concept."
+---
+
+## Overview
+
+**Maximum Loan-to-Value (Max LTV)** defines the upper limit of borrowing power that can be drawn against deposited collateral. It represents the ratio between the borrowed amount and the collateral’s current market value at which the position remains safe from liquidation.
+
+For example, a Max LTV of 75% indicates that a user may borrow up to 75% of their collateral’s total market value before the position reaches its risk boundary.
+
+## Purpose
+
+Max LTV is a central parameter that governs both **capital efficiency** and **protocol risk tolerance**.  
+A higher LTV ratio allows users to utilize more of their collateral for borrowing but reduces the liquidation buffer.  
+Conversely, a lower LTV enhances systemic safety at the cost of lower capital utilization.
+
+By tailoring Max LTV individually for each collateral type, the protocol aligns exposure with market characteristics such as volatility, liquidity depth, and oracle reliability.
+
+## Determining Max LTV
+
+Each asset’s Max LTV is calibrated to balance **capital efficiency** and **risk protection**.  
+Assets with stable prices and deep liquidity (such as USDC or ETH) are assigned higher LTVs, while more volatile or less liquid assets receive lower limits.
+
+| Asset Type | Volatility | Liquidity | Typical Max LTV |
+|-------------|-------------|------------|------------------|
+| Stablecoins | Low | High | 80–90% |
+| Blue-Chip Assets (ETH, WBTC) | Medium | High | 70–80% |
+| Volatile Tokens (LSDs, Altcoins) | High | Medium | 50–65% |
+| Illiquid / Long-Tail Assets | High | Low | ≤ 40% |
+
+By maintaining conservative Max LTV thresholds, the protocol preserves solvency and minimizes the likelihood of cascading liquidations during periods of market stress.

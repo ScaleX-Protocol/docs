@@ -1,0 +1,72 @@
+---
+title: "Lend & Borrow Pool"
+description: "Understand how the lending pool powers liquidity and leverage within the protocol."
+---
+
+## Overview
+
+The **Lend & Borrow Pool** is a core component of our liquidity layer.  
+It allows users to **lend assets** to earn passive yield or **borrow assets** to gain capital efficiency and leverage.
+
+When users supply assets, they receive **synthetic vault tokens** that represent their share of the pool.  
+These tokens automatically accrue value as interest is paid by borrowers and can be redeemed 1:1 for the underlying asset at any time.
+
+<Info>
+Supplying assets adds liquidity to the pool.  
+Borrowers draw from this same liquidity, and the interest they pay continuously increases the value of each vault token.
+</Info>
+
+---
+
+## How It Works
+
+1. **Supply Assets**  
+   Users deposit supported assets into the lending pool.  
+   In return, they receive a synthetic token (e.g., sETH, sUSDC) representing their position.
+
+2. **Pool Utilization**  
+   The pool aggregates all supplied liquidity.  
+   Borrowers draw from this shared pool, creating a dynamic balance between **available supply** and **borrowed assets**.
+
+3. **Accrued Value**  
+   As borrowers pay interest, the total value of the pool increases.  
+   Lenders’ synthetic tokens automatically reflect this growth — no manual claiming required.
+
+4. **Withdraw or Redeem**  
+   Lenders can withdraw their assets at any time, receiving both their principal and the interest earned.
+
+---
+
+## Utilization Rate
+
+The **Utilization Rate (U)** measures how much of the pool’s liquidity is currently borrowed:
+
+U = Total Borrowed / Total Supplied
+
+It reflects the pool’s activity and directly influences the interest rate model.
+
+- **Low Utilization:** More liquidity available → lower borrow rates.  
+- **Optimal Utilization:** Supply and demand balanced → efficient capital flow.  
+- **High Utilization:** Limited liquidity → higher borrow rates and lender yields.
+
+<Tip>
+High utilization means capital is efficiently deployed — but also that available liquidity for withdrawals may be temporarily limited.
+</Tip>
+
+---
+
+## Summary
+
+| Utilization Level | Borrower Impact | Lender Impact | Rate Behavior |
+|--------------------|-----------------|----------------|----------------|
+| **Low** | Easy to borrow | Lower yield | ↓ Interest rate |
+| **Optimal** | Balanced | Balanced | ⚖ Stable |
+| **High** | Harder to borrow | Higher yield | ↑ Interest rate |
+
+---
+
+**In essence:**  
+The Lend & Borrow Pool connects liquidity providers and borrowers in a self-balancing system — where interest rates dynamically adjust to match real-time market activity.
+
+---
+

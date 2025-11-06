@@ -1,0 +1,51 @@
+---
+title: "Health Factor"
+description: "Understand borrowing safety counter is measured."
+---
+
+## Overview
+
+The **Health Factor (HF)** represents the overall safety of a user's borrowing position.  
+It measures how close an account is to liquidation — a higher value means a safer position.
+
+It's a powerful way to examine risk in a specific collateral on debt, but it doesn't fit when the user has multiple collateral assets or debts.
+
+<Info>
+Health Factor like a credit score but works for onchain DeFi. Higher means further from liquidation.
+</Info>
+
+---
+
+## Formula
+
+Health Factor = Risk-adjusted Collateral Value / Risk-adjusted Debt Value
+
+Each asset has its own **risk weight**, reflecting the volatility.  
+For example, stablecoins typically have higher collateral factors than volatile tokens like ETH or BTC.
+
+<Tip>
+When our Health Factor drops below **1.0**, our position becomes eligible for liquidation. So, maintaining a buffer above 1.5 helps protect collateral from sudden market swings.
+</Tip>
+
+---
+
+## Health Factor Safety Levels
+
+| Health Factor Range | Status | Description |
+|----------------------|---------|--------------|
+| **Above 2.0** | 🟢 Very Safe | plenty of buffer |
+| **1.5 – 2.0** | 🟡 Safe | Healthy position, golden spot |
+| **1.0 – 1.5** | 🟠 Moderate | Monitor closely — nearing liquidation threshold |
+| **Below 1.0** | 🔴 Liquidation Triggered | Collateral is triggerd |
+
+---
+
+## Shortcut
+
+The Health Factor sensitive with market prices:
+
+- **Collateral value increases** or **Repay debt →** HF increasing made position become safer  
+- **Collateral value decreases** or **Borrow more →** HF falling made position become riskier  
+ 
+---
+

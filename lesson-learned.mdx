@@ -1,0 +1,120 @@
+---
+title: "Lesson Learned"
+description: "Building a "
+---
+
+## Lesson Learned
+
+1. Centralized Hyperliquid CLOB Vault (Jelly-jelly attack)
+
+Attack happend when a trader open massive short but price is skyrocketed. The loss is too big and imbalance orderbook liquidity, then HLP (hyperliquid vault) take over the trade that exposed into large risk  
+
+**Lesson :** Oracle override, using vault as liquidity engine, centralized vault
+
+2. Binance Oracle (ATOM, BNSOL, USDE, WBETH)
+
+A domino effect triggered by a internal oracle, amplified by auto-liquidations and feedback loops inside Binance. A small liquidity hiccup → wrong price feed → mass liquidation → more selling → system meltdown. But, binance announce incorrect price due to display issue
+
+**Lesson :** unstable oracle, unclear, no transparency
+
+3. Executed Trade Without Oracle (Balancer Exploit)
+
+Attacker crafted a transaction that skipped any price quote step and directly told the Vault to move funds, often doing the rest (swaps, consolidation, bridging) in the same transaction or immediately after.
+
+**Lesson :** No quotation/price discovery on vault activity
+
+Preventing these 3 last 3 major defi incident.
+CLOB with oracle
+
+## Getting Started
+
+<Card
+  title="Start Earning"
+  icon="rocket"
+  href="/quickstart"
+  horizontal
+>
+  Follow our three step quickstart guide.
+</Card>
+
+## Why This Combo Created The "Perfect Duo"
+
+We All Agree That 
+
+<Columns cols={2}>
+  <Card
+    title="Price Protection"
+    icon="pen-to-square"
+    href="/development"
+  >
+    Natural price discovery from oracle and unamplified by liquidity depth. 
+  </Card>
+  <Card
+    title="Transparent & Verifyable"
+    icon="palette"
+    href="/essentials/settings"
+  >
+    Order execution based on real time on-chain activity.
+  </Card>
+    <Card
+    title="Independent Vault"
+    icon="map"
+    href="/essentials/navigation"
+  >
+    Every single trade/transfer purely come from market dynamics.
+  </Card>
+  <Card
+    title="Absolute Liquidation"
+    icon="terminal"
+    href="/api-reference/introduction"
+  >
+    Health factor liquidation based not liquidity depth.
+  </Card>
+</Columns>
+
+So, lending protocol are perfect to continously generate yield on idle capital while trading platform as solution for providing liquidity and protect user from liquidation
+
+## Create beautiful pages
+
+Everything you need to create world-class documentation.
+
+<Columns cols={2}>
+  <Card
+    title="Write with MDX"
+    icon="pen-fancy"
+    href="/essentials/markdown"
+  >
+    Use MDX to style your docs pages.
+  </Card>
+  <Card
+    title="Code samples"
+    icon="code"
+    href="/essentials/code"
+  >
+    Add sample code to demonstrate how to use your product.
+  </Card>
+  <Card
+    title="Images"
+    icon="image"
+    href="/essentials/images"
+  >
+    Display images and other media.
+  </Card>
+  <Card
+    title="Reusable snippets"
+    icon="recycle"
+    href="/essentials/reusable-snippets"
+  >
+    Write once and reuse across your docs.
+  </Card>
+</Columns>
+
+## Need inspiration?
+
+<Card
+  title="See complete examples"
+  icon="stars"
+  href="https://mintlify.com/customers"
+>
+  Browse our showcase of exceptional documentation sites.
+</Card>

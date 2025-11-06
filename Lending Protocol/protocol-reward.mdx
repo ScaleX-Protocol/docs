@@ -1,0 +1,54 @@
+---
+title: "Protocol Reward"
+description: "Yield generation using ERC-4626 vaults."
+---
+
+## Overview
+
+Synthetic token are generated as long as interaction with pool. Adopting from EIP-4626, yield-bearing vault tokens representing both trading positions and lending shares.
+
+EIP-4626, also known as ERC-4626, is a token standard designed for yield-bearing vaults. It defines a universal way to represent and manage users’ shares in a vault, making DeFi protocols more compatible with one another. 
+
+
+## ERC-4626: Standardizing Yield Vaults
+
+**ERC-4626**, formally known as *EIP-4626: Tokenized Vault Standard*, introduces a unified framework for yield-bearing vaults in decentralized finance.  
+Prior to its adoption, vault implementations varied across protocols, leading to inconsistencies in accounting, integrations, and automation.  
+ERC-4626 resolves these issues by defining standardized interfaces for deposit, withdrawal, minting, and redemption operations.
+
+By standardizing core actions like deposits and withdrawals, EIP-4626 eliminates the messy, inconsistent methods that existed before — paving the way for smoother integrations and a more efficient DeFi ecosystem.
+
+## Token Generation - Burn Mechanism
+
+- **Represent shares:** Turn user deposits into ERC-4626 tokens that mirror ownership in a yield-bearing vault.
+- **Deposit assets:** Send underlying tokens like ETH or stablecoins into the vault and mint ERC-4626 tokens in return.
+- **Accrue yield:** Let the vault generate returns, increasing the value of each vault token over time.
+- **Withdraw funds:** Burn vault tokens to redeem the original deposit plus the accumulated yield.
+
+
+## Mathematical Representation
+
+Let:
+
+P = Total underlying assets in the vault  
+S = Total supply of ERC-4626 shares  
+E = P / S
+
+Where E represents the **exchange rate**, or the value of one vault token in terms of the underlying asset.  
+As yield accumulates, P increases while S remains constant, causing E to rise proportionally.
+
+User yield is thus embedded in the token’s internal accounting rather than through explicit reward emissions.
+
+---
+
+## Why ERC-4626?
+
+- **Standardization:** Simplify integrations and audits across DeFi protocols.  
+- **Capital Efficiency:** All deposited assets contribute to yield generation; idle capital is minimized.  
+- **Composability:** ERC-4626 tokens can be used as collateral or combined within other protocols without additional wrapping.  
+- **Transparent Accounting:** Yield and ownership are mathematically verifiable through the vault’s total asset and total supply metrics.  
+- **Gas Optimization:** Shared interface logic reduces the need for redundant smart-contract code across vaults.  
+
+---
+
+This architecture ensures that all user positions remain fully composable, auditable, and efficient — forming a foundational layer for scalable, yield-driven DeFi systems.

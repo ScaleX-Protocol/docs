@@ -1,0 +1,46 @@
+---
+title: "Price Discovery"
+description: "Market Prices Formation ."
+---
+
+## Overview
+
+Price discovery is the mechanism through which the protocol determines the fair market value of an asset.  
+In decentralized environments, this process emerges from real-time trading activity rather than centralized price setting.
+## Mechanism
+
+In a **CLOB-based market**, prices continuously evolve from the interaction between bids and asks.  
+The **midpoint between the best bid and best ask** reflects the current equilibrium, while each executed trade refines this equilibrium in real time.  
+This structure produces granular, order-driven valuation and mirrors the mechanisms used by traditional exchanges.
+
+In contrast, **AMM and CLMM models** infer prices algorithmically based on liquidity curves and pool reserves.  
+While AMMs provide constant liquidity, their price discovery is reactive and can deviate from external markets until arbitrage realigns them.
+
+## Oracle Integration
+
+To maintain price accuracy across markets, decentralized protocols rely on **on-chain oracles**.  
+Common oracle frameworks include:
+
+| Oracle Provider | Methodology | Example Use Cases |
+|------------------|-------------|-------------------|
+| **Chainlink** | Aggregates off-chain exchange data from multiple sources, medianized for robustness | Lending markets (Aave, Compound) |
+| **Pyth Network** | Streams real-time price feeds from institutional and exchange publishers directly on-chain | Perpetual DEXs (Synthetix, Drift, Marginfi) |
+| **Chronicle / Uniswap TWAP** | Derives price from on-chain liquidity pools using time-weighted averages | AMM-based protocols and vault strategies |
+
+Oracles serve as a stabilization layer — validating or supplementing the market-derived prices from CLOBs or AMMs.  
+CEXs rely on **internal order book depth** for instant discovery, while decentralized protocols balance **transparency and latency** by combining on-chain trades with oracle consensus.
+
+## Comparative Models
+
+| Model | Source of Price | Discovery Speed | Transparency | Liquidity Efficiency | Typical Users |
+|--------|-----------------|-----------------|---------------|----------------------|----------------|
+| **CEX (Centralized Exchange)** | Internal order book | Instant | Low (black-box engine) | High | Retail & institutional traders |
+| **CLOB (On-chain Order Book)** | On-chain bids/asks | Fast | High | Medium–High | Advanced traders, perps DEXs |
+| **AMM (Constant Product)** | Pool reserves (x*y=k) | Moderate | High | Moderate | Spot DEXs, long-tail assets |
+| **CLMM (Concentrated Liquidity)** | Liquidity ranges around market price | Fast–Moderate | High | Very High (capital efficient) | LPs seeking optimized yield |
+
+
+## Significance
+
+Accurate price discovery ensures **fair execution**, **efficient liquidity allocation**, and **robust collateral valuation**.  
+Without it, protocols face distorted markets, delayed arbitrage, and increased systemic risk.
