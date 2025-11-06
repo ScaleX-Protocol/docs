@@ -18,6 +18,7 @@
             "icon": "book-open-cover",
             "pages": [
               "genesis-story",
+              "lesson-learned",
               {
                 "group": "Protocol Mechanics",
                 "icon": "settings-gear",
@@ -43,8 +44,7 @@
                   }
                 ]
               },              
-              "quickstart",
-              "lesson-learned",
+              "quickstart",              
               "development"
               
             ]
