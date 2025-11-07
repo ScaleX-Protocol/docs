@@ -1,100 +1,101 @@
 ---
-title: "Magical Architecture"
-description: "Features that are Exclusive to Our Platform"
+title: "Existing Solution"
+description: "Features that Formerly Existed"
 ---
 
 # Magical Architecture
 
-To help users understand the landscape, here’s a breakdown of the most common borrowing and trading products — **OKX Auto Borrow / Repay**, **Binance Post Only**, **Bybit Dual Win**, and **Fidelity Margin Loan** — explaining how each works, their purpose, and where they fall short.
+To help users understand the landscape, here’s a breakdown of the most common borrowing and trading products — **OKX Auto Borrow / Repay**, **Binance Post Only**, **Binance Dual Investment**, **Bybit Dual Win**, and **Fidelity Margin Loan** — explaining how each works, their purpose, and where they fall short.
 
 ---
 
 ## 🧩 OKX Auto Borrow / Repay
 
-**Mechanism:**
+**Mechanism:**  
 Automatically borrows assets when an order exceeds available balance, and repays when the position closes or profit is realized.
 
-**Process:**
+**Process:**  
 1. User places an order larger than their available funds.  
 2. The system borrows the shortfall from the margin pool instantly.  
 3. When the position closes, the borrowed amount is automatically repaid using the user’s balance or profit.
 
-**Purpose:**
+**Purpose:**  
 Simplifies margin trading and reduces idle debt by automating borrowing and repayment.
 
-**Disadvantage:**
+**Disadvantage:**  
 - Interest accrues immediately upon borrowing, even if orders aren’t filled.  
 - Users have no control over repayment logic, leading to potential unwanted size reduction.  
 - Requires centralized custody; funds must remain in the platform’s margin system.  
 
 ---
 
-## ⚙️ Binance Post Only
+## 💰 Binance Dual Investment
 
-**Mechanism:**
-Ensures that orders are added to the order book as **maker orders** only.
+**Mechanism:**  
+A structured investment product that locks assets for a fixed term and yield, depending on market movement.
 
-**Process:**
-1. When a trader places an order that would execute immediately, the system cancels it.  
-2. Guarantees the order provides liquidity and earns maker rebates.
+**Process:**  
+1. Users deposit an asset (e.g., BTC or ETH) and select a target price and expiry date.  
+2. If the market hits the target, funds are settled in the opposite asset (e.g., BTC → USDT).  
+3. If not, users receive fixed yield on the deposited asset.
 
-**Purpose:**
-Designed for traders seeking maker fee rebates and precise execution control.
+**Purpose:**  
+Allows users to earn a fixed return while speculating on future price direction.
 
-**Disadvantage:**
-- Rebates apply **only after execution**; idle orders earn no yield.  
-- Orders may be canceled frequently during high volatility, reducing fill opportunities.  
+**Disadvantage:**  
+- Locked principal until expiry; no early withdrawal or flexibility. Yield only realized at maturity.  
+- Uncustomized price — users cannot freely set strike parameters.  
+- Has maturity; cannot adjust or exit mid-term without penalty.  
 
 ---
 
 ## ⚖️ Bybit Dual Win
 
-**Mechanism:**
+**Mechanism:**  
 A structured product that combines **yield** and **options** to generate returns from two possible outcomes.
 
-**Process:**
+**Process:**  
 1. User deposits an asset and selects a target (strike) price.  
 2. If the target is reached, the asset converts to stablecoins at a premium.  
 3. If not, the user earns a fixed yield for the duration.  
 
-**Purpose:**
+**Purpose:**  
 Allows users to earn in either direction — ideal for range-bound markets or passive strategies.
 
-**Disadvantage:**
-- Includes a **fixed settlement price** and **expiry date**, limiting flexibility.  
-- Cannot adjust or exit positions mid-term without penalty.  
-- Yield depends heavily on market volatility.  
+**Disadvantage:**  
+- Locked principal until expiry; no early withdrawal or flexibility. Yield only realized at maturity.  
+- Uncustomized price — users cannot freely set strike parameters.  
+- Has maturity; cannot adjust or exit mid-term without penalty.  
 
 ---
 
 ## 🏦 Fidelity Margin Loan
 
-**Mechanism:**
+**Mechanism:**  
 Traditional brokerage margin loan where users borrow against portfolio assets to increase leverage.
 
-**Process:**
+**Process:**  
 1. Users pledge eligible securities as collateral.  
 2. Fidelity lends cash based on a percentage of asset value.  
 3. Interest is charged daily until repayment.  
 
-**Purpose:**
+**Purpose:**  
 Provides liquidity for investors without selling existing holdings.
 
-**Disadvantage:**
-- Fixed interest rates that adjust slowly with market conditions.  
+**Disadvantage:**  
 - No on-chain transparency or automation.  
 - Limited repayment flexibility; requires manual management.  
 
 ---
 
-## 🧠 Summary Table
+## Summary Table
 
 | Product | Mechanism | Purpose | Disadvantage |
 |---|---|---|---|
 | OKX Auto Borrow / Repay | Auto-borrows and auto-repays margin shortfall | Simplifies margin trading | Interest accrues instantly; limited repayment control; centralized custody |
-| Binance Post Only | Ensures orders rest as makers | Earns rebates while providing liquidity | Rebates only after execution; idle orders earn nothing |
-| Bybit Dual Win | Structured yield + options hybrid | Earns yield in both outcomes | Fixed price & expiry limit flexibility |
-| Fidelity Margin Loan | Traditional broker margin lending | Unlocks liquidity without selling assets | Fixed rates, no automation, manual repayment |
+| Binance Dual Investment | Structured fixed-term yield product | Earns yield based on market outcome | Locked principal; uncustomized price; fixed maturity |
+| Bybit Dual Win | Structured yield + options hybrid | Earns yield in both outcomes | Locked principal; uncustomized price; fixed maturity |
+| Fidelity Margin Loan | Traditional broker margin lending | Unlocks liquidity without selling assets | no automation, manual repayment |
 
 ---
 
@@ -103,11 +104,12 @@ While these tools streamline certain aspects of trading and borrowing, they stil
 **ScaleX** integrates these ideas into a single, yield-optimized system — merging liquidity, leverage, and automation into one composable DeFi architecture.
 
 ---
+
 ## 🚀 How ScaleX Solves These Limitations
 
 | Feature | Existing Limitation | ScaleX Solution |
 |---|---|---|
 | OKX Auto Borrow / Repay | Interest accrues instantly; fixed repayment logic | **Customizable borrow and repay parameters** — no forced size reduction, no idle interest |
-| Binance Post Only | Rebates only after execution; idle capital earns nothing | **Earns yield while waiting** + **rebate after fill**; orders remain locked to ensure liquidity |
+| Binance Dual Investment | Locked term and fixed expiry | **No expiry**, **continuous yield**, and **customizable target** for flexible management |
 | Bybit Dual Win | Fixed settlement price and expiry | **Flexible price targets**, **no expiry**, adjustable anytime |
-| Fidelity Margin Loan | Fixed rates; no automation | **Dynamic rates**, **on-chain transparency**, and **programmable repayment** for full flexibility |
+| Fidelity Margin Loan | No automation and transparency | **on-chain transparency**, and **programmable repayment** for full flexibility |
