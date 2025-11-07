@@ -17,7 +17,9 @@
             "group": "Getting started",
             "pages": [
               "genesis-story",
-              "lesson-learned"
+              "lesson-learned",
+              "benchmarkings",
+              "magical-feature"
             ]
           },
             {
