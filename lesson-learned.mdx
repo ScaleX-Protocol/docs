@@ -5,19 +5,19 @@ description: "Building a Safe-Reliable Protocol"
 
 ## Past Cases
 
-1. Centralized Hyperliquid CLOB Vault (Jelly-jelly attack)
+1. **Centralized Hyperliquid CLOB Vault (Jelly-jelly attack)**
 
 Attack happend when a trader open massive short but price is skyrocketed. The loss is too big and imbalance orderbook liquidity, then HLP (hyperliquid vault) take over the trade that exposed into large risk  
 
 **Lesson :** Oracle override, using vault as liquidity engine, centralized vault
 
-2. Binance Oracle (ATOM, BNSOL, USDE, WBETH)
+2. **Binance Oracle (ATOM, BNSOL, USDE, WBETH)**
 
 A domino effect triggered by a internal oracle, amplified by auto-liquidations and feedback loops inside Binance. A small liquidity hiccup → wrong price feed → mass liquidation → more selling → system meltdown. But, binance announce incorrect price due to display issue
 
 **Lesson :** unstable oracle, unclear, no transparency
 
-3. Executed Trade Without Oracle (Balancer Exploit)
+3. **Executed Trade Without Oracle (Balancer Exploit)**
 
 Attacker crafted a transaction that skipped any price quote step and directly told the Vault to move funds, often doing the rest (swaps, consolidation, bridging) in the same transaction or immediately after.
 
@@ -27,11 +27,11 @@ Attacker crafted a transaction that skipped any price quote step and directly to
 
 **The Traders POV** 
 
-1. Borrowing Liquidation 
+1. **Borrowing Liquidation** 
 
 When traders borrow against their collateral, lending protocols force liquidate during market drops. Users watch helplessly as their collateral gets sold at crash prices, **unable to protect themselves** by strategically converting to stable assets beforehand.
 
-2. Expensive Manual Repayment Cost
+2. **Expensive Manual Repayment Cost**
 
 When traders borrow asset and immediately swap to other asset, they must manually repay the loan at market rates (including gas fees, slippage etc). They **miss opportunities to automatically repay at prefferable price**, then losing the chance to reduce borrowing costs during market dips.
 
@@ -74,52 +74,3 @@ To prevent incidents like the last three major DeFi cases, we should ensure:
 ScaleX routes idle order capital to a lending pool until fill, dynamically manages utilization to protect lenders and borrowers, and shares interest back to lenders—aligning incentives while preserving orderbook liquidity, while allowing users to personalize orders at preferred prices. 
     
 Orderbook liquidity is natural and user-driven; no internal vault manufactures orders.
-
-
-
-
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
