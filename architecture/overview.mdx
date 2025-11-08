@@ -4,37 +4,14 @@ The Unified CLOB DEX-Lending Protocol integrates trading and lending through fiv
 
 ## Core Components
 
-### BalanceManager
-Central hub that manages asset allocation between trading and lending operations. When users deposit assets, BalanceManager automatically mints synthetic tokens for trading and allocates real assets to lending pools.
+The protocol operates through five integrated components:
 
-### Synthetic Tokens
-ERC20 tokens representing 1:1 pegged underlying assets with separate yield tracking through weighted checkpoints. These tokens enable clean order book operations while users earn yield from their underlying assets.
+1. **[Balance Manager](./balance-manager)** - Maintains 1:1 peg, tracks yields, and issues synthetic tokens when users deposit assets
 
-### OrderBook
-High-performance Central Limit Order Book with Red-Black Tree data structure for O(log n) price operations. Handles synthetic token trading with integrated lending awareness for advanced position management.
+2. **[Synthetic Tokens](./synthetic-token)** - ERC20 tokens representing 1:1 pegged underlying assets that trade on the order book while users earn yield from underlying deposits
 
-### Oracle  
-Multi-timeframe TWAP price oracle providing manipulation-resistant pricing. Uses different timeframes for various operations: current prices for trading, medium-term for borrowing, and conservative long-term for collateral valuation.
+3. **[Order Book](./orderbook)** - High-performance CLOB with Red-Black Tree data structure for O(log n) price operations and integrated lending awareness
 
-### LendingManager
-Native lending protocol with integrated order book access. Manages interest rates, collateral calculations, and provides advanced features like pre-positioned protective orders and automated loan repayment.
+4. **[Oracle](./oracle)** - Multi-timeframe TWAP oracle providing manipulation-resistant pricing for trading, borrowing, and collateral valuation
 
-## Component Integration
-
-These five components work together through a unified asset model where:
-
-1. Users deposit to BalanceManager → receive synthetic tokens
-2. Synthetic tokens trade on OrderBook while earning yield
-3. Oracle provides secure pricing for all operations  
-4. LendingManager generates yield from real assets
-5. BalanceManager maintains 1:1 peg and tracks yields
-
-## Documentation Structure
-
-**[Protocol Mechanics](./protocol-mechanics)** - System fundamentals and user-facing concepts
-
-**Lending Protocol** - Deposit, borrow, LTV, liquidation mechanics
-
-**CLOB** - Order book operations and oracle systems
-
-**Technical Architecture** - Red-Black Tree, yield distribution, collateral pricing, advanced derivatives
+5. **[Lending Manager](./lending-manager)** - Generates yield from real assets through native lending protocol with integrated order book access
