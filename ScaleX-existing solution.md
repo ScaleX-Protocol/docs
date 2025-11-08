@@ -1,9 +1,6 @@
----
-title: "Existing Solution"
-description: "Features that Formerly Existed"
----
+# **B. Existing Solution**
 
-## **1\. Binance / Bybit - Dual Investment**
+## **1\. Binance / Bybit \- Dual Investment**
 
 **Mechanism:** A structured product that combines yield generation with options-like behavior, allowing users to earn returns or accumulate/sell assets at preferred prices.
 
@@ -23,9 +20,7 @@ In essence, it functions as both a **yield product** and a **conditional limit o
 * Cannot adjust or exit positions mid-term without penalty.  
 * Yield depends heavily on market volatility.
 
----
-
-## **2\. Fidelity - Margin Loans**
+## **2\. Fidelity \- Margin Loans**
 
 **Mechanism:** Traditional brokerage margin loan where users borrow against portfolio assets to increase leverage.
 
@@ -50,7 +45,7 @@ While these tools streamline certain aspects of trading and borrowing, they stil
 
 ---
 
-## **3\. OKX - Auto-Borrow & Auto-Repay**
+## **3\. OKX \- Auto-Borrow & Auto-Repay**
 
 **Mechanism:** Automatically borrows assets when an order exceeds available balance of the required asset, and repays when the position closes or profit is realized.
 
@@ -58,31 +53,29 @@ While these tools streamline certain aspects of trading and borrowing, they stil
 
 1. Users place an order larger than their available funds.  
 2. The system borrows the shortfall from the margin pool instantly.  
-3. When the position closes, the borrowed amount is automatically repaid using the user's balance or profit.
+3. When the position closes, the borrowed amount is automatically repaid using the user’s balance or profit.
 
 **Purpose:** Simplifies margin trading and reduces idle debt by automating borrowing and repayment.
 
 **Disadvantage:**
 
-* Interest accrues immediately upon borrowing, even if orders aren't filled.  
+* Interest accrues immediately upon borrowing, even if orders aren’t filled.  
 * Users have no control over repayment logic, leading to potential unwanted size reduction.  
-* Requires centralized custody; funds must remain in the platform's margin system.
+* Requires centralized custody; funds must remain in the platform’s margin system.
 
----
-
-## **4\. Glow Finance - Margin & Yield Engine**
+## **4\. Glow Finance \- Margin & Yield Engine**
 
 **Mechanism:**
 
 An on-chain, non-custodial margin and yield protocol that lets users deposit assets to simultaneously **earn yield** and **utilize them as collateral for trading or restaking** within the same environment. It effectively combines lending, borrowing, and trading functions, allowing users to earn on idle capital while deploying leverage.
 
-Borrowed assets are restricted to **internal protocol usage only** — users cannot withdraw or use them externally, ensuring all positions remain contained within Glow's smart-contract system.
+Borrowed assets are restricted to **internal protocol usage only** — users cannot withdraw or use them externally, ensuring all positions remain contained within Glow’s smart-contract system.
 
 **Process:**
 
 1. Users deposit eligible assets (e.g., SOL, USDC) into a margin account; the assets immediately start earning yield and serve as collateral.  
 2. The protocol enables borrowing of other supported assets against the collateral, which can then be used for in-protocol actions such as trading, liquidity provision, or restaking (e.g., converting borrowed SOL into glowSOL to earn staking rewards).  
-3. When the user's position is closed or collateral is withdrawn, the borrowed amount must be repaid; the system automatically calculates health factors and may trigger liquidation if thresholds are breached.
+3. When the user’s position is closed or collateral is withdrawn, the borrowed amount must be repaid; the system automatically calculates health factors and may trigger liquidation if thresholds are breached.
 
 **Purpose:**
 
@@ -92,30 +85,3 @@ Maximizes **capital efficiency** by merging yield generation and leverage into a
 
 * **Internal-only usage:** Borrowed funds cannot be transferred or used outside the Glow ecosystem.  
 * **Liquidation risk:** Margin positions are subject to collateral ratio thresholds.
-
----
-
-## Summary Table
-
-| Product | Mechanism | Purpose | Disadvantage |
-|---|---|---|---|
-| Binance / Bybit Dual Investment | Structured yield + options hybrid | Earns yield based on market outcome | Fixed settlement price and expiry; limited flexibility |
-| Fidelity Margin Loan | Traditional broker margin lending | Unlocks liquidity without selling assets | No automation, manual repayment; no crypto support |
-| OKX Auto Borrow / Repay | Auto-borrows and auto-repays margin shortfall | Simplifies margin trading | Interest accrues instantly; limited repayment control |
-| Glow Finance | On-chain margin & yield engine | Earns yield while providing leverage | Internal-only usage; liquidation risk |
-
----
-
-While these tools streamline certain aspects of trading and borrowing, they still leave users exposed to inefficiencies like forced borrowing, idle capital, or rigid repayment logic.  
-
-**What if there was a way to combine the best of all these approaches—while eliminating their fundamental flaws?**
-
-Imagine a system where:
-- Your limit orders earn yield automatically without compromising your trading strategy
-- No more choosing between trading opportunities and passive income  
-- Complete flexibility with no expiry dates or forced settlements
-- On-chain transparency and composability
-
-**ScaleX Protocol** reimagines how trading and lending work together—addressing these core limitations head-on.
-
-*Ready to see how it's possible?* → **[ScaleX Protocol](scalex-protocol.mdx)**

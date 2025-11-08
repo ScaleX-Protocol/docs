@@ -17,9 +17,10 @@
             "group": "Getting started",
             "pages": [
               "genesis-story",
+              "existing-solution",
+              "scalex-protocol",
               "lesson-learned",
-              "benchmarkings",
-              "existing-solution"
+              "benchmarkings"
             ]
           },
             {
