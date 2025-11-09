@@ -2,12 +2,12 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "palm",  
   "colors": {
-    "primary": "#2563EB",
-    "light": "#FFFFFF",
-    "dark": "#FFFFFF"
+    "primary": "#F97316",
+    "light": "#0A0A0A",
+    "dark": "#000000"
   },
   "name": "ScaleX - Unified CLOB DEX Lending Protocol",
-  "favicon": "/logo/scalex-logo.svg",
+  "favicon": "/logo/scalex-orange.png",
   "navigation": {
     "tabs": [
       {
@@ -74,8 +74,8 @@
     }
   },
   "logo": {
-    "light": "/logo/scalex-logo.svg",
-    "dark": "/logo/scalex-logo.svg"
+    "light": "/logo/scalex-orange.png",
+    "dark": "/logo/scalex-orange.png"
   },
   "contextual": {
     "options": [

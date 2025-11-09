@@ -1,0 +1,59 @@
+---
+title: "ScaleX Next Journey"
+description: "Multichain Integration with Espresso"
+---
+
+By leveraging **Espresso’s shared sequencing layer**, ScaleX enables seamless cross-chain interaction without bridges or fragmented liquidity.
+
+
+### Problem  
+Liquidity and vault states become fragmented across chains — each rollup has its own block time and finality window.  
+This causes **asynchronous yield updates**, **liquidity inefficiency**, and **bridge dependence** when managing a single vault across ecosystems.
+
+
+### Espresso Solution  
+Espresso provides a **shared sequencing layer** that synchronizes transaction ordering across rollups.  
+This allows ScaleX to maintain **one canonical vault** on a fast chain, while users can interact from **any chain** without using bridges.
+
+
+### Example  
+- The main ScaleX vault lives on **Arbitrum**.  
+- A user on **Base** deposits into the vault through Espresso’s sequencer.  
+- Espresso timestamps, orders, and delivers the transaction to Arbitrum.  
+- The vault updates instantly, and the new state is reflected back on Base.
+
+
+### Impact  
+- **Unified liquidity:** One vault accessible from all chains.  
+- **Faster updates:** No lag between slow and fast rollups.  
+- **Bridge-free synchronization:** Reduced risk and friction.  
+- **Scalable UX:** Users interact locally while the system settles globally.
+
+
+# MEV-Resistant Yield Layer
+
+### Problem  
+In open DeFi markets, **MEV bots** can front-run or reorder transactions — especially during large deposits, withdrawals, or liquidations.  
+This creates **unfair pricing**, **yield leakage**, and **loss of execution fairness** for both lenders and traders.
+
+
+### Espresso Solution  
+Espresso’s sequencing layer supports **encrypted transactions** using threshold encryption.  
+This ensures that all ScaleX transactions — including deposits, borrows, and yield rebalances — remain **private until finalized**.  
+As a result, no participant can see or exploit pending transactions for MEV gains.
+
+
+### Example  
+- A whale prepares a large lending deposit.  
+- The transaction is encrypted and sent to Espresso’s sequencer.  
+- Validators can order it but **cannot see the contents** until it’s finalized.  
+- Once confirmed, the vault updates and yield distribution adjusts without any front-run opportunity.
+
+
+### Impact  
+- **MEV protection:** Transactions stay private until execution.  
+- **Fair liquidations:** No sniping or ordering advantage.  
+- **Stable yields:** Prevents yield manipulation from large inflows/outflows.  
+- **Secure user experience:** Institutional-grade privacy within a decentralized environment.
+
+
