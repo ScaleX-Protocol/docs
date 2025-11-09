@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "palm",  
   "colors": {
-    "primary": "#F97316",
+    "primary": "#F06718",
     "light": "#0A0A0A",
     "dark": "#000000"
   },
