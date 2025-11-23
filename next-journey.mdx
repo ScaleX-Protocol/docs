@@ -1,60 +1,49 @@
 ---
 title: "ScaleX Next Journey"
-description: "Multichain Integration with Espresso/Pelagos"
+description: "Multichain Integration with Pelagos Network"
 ---
 
-By leveraging **Espresso’s shared sequencing layer**, ScaleX enables seamless cross-chain interaction without bridges or fragmented liquidity.
+By building on **Pelagos’ cross-chain DAG execution layer**, ScaleX enables truly atomic, bridge-free cross-rollup operations.
 
-# Crosschain Order Submission
+# Cross-chain Order Submission
 
 ### Problem  
-Liquidity and vault states become fragmented across chains — each rollup has its own block time and finality window.  
-This causes **asynchronous yield updates**, **liquidity inefficiency**, and **bridge dependence** when managing a single vault across ecosystems.
-
+Liquidity and vault state fragment across chains — each rollup has different block time, latency, and data availability.  
+This creates inefficiencies in yield updates, liquidity, and reliance on bridges.
 
 ### Solution  
-Espresso provides a **shared sequencing layer** that synchronizes transaction ordering across rollups.  
-This allows ScaleX to maintain **one canonical vault** on a fast chain, while users can interact from **any chain** without using bridges.
-
+Pelagos provides a **multichain DAG consensus + messaging layer** that lets ScaleX maintain a single canonical vault, even as users interact from different rollups.  
+All chains connected to Pelagos share a consistent view of state, and cross-chain actions can be executed atomically.
 
 ### Example  
 - The main ScaleX vault lives on **Arbitrum**.  
-- A user on **Base** deposits into the vault through Espresso’s sequencer.  
-- Espresso timestamps, orders, and delivers the transaction to Arbitrum.  
-- The vault updates instantly, and the new state is reflected back on Base.
-
+- A user on **Base** deposits through Pelagos.  
+- Pelagos validators sequence and validate the transaction, then commit it to the shared state. :contentReference[oaicite:8]{index=8}  
+- The vault is updated in “real time” (according to Pelagos’ DAG + snapshot model), and that state is accessible on every connected chain.
 
 ### Impact  
-- **Unified liquidity:** One vault accessible from all chains.  
-- **Faster updates:** No lag between slow and fast rollups.  
-- **Bridge-free synchronization:** Reduced risk and friction.  
-- **Scalable UX:** Users interact locally while the system settles globally.
+- **Unified liquidity:** Single vault, accessible from all Pelagos-connected chains.  
+- **Consistent state:** No more fragmentation or stale vault data.  
+- **Bridge-free execution:** No need for wrappers or trust-minimized bridging.  
+- **Responsive UX:** Users transact locally, but state is globally consistent.
 
-
-# MEV-Resistant Yield Layer
+# MEV-Resilient Execution
 
 ### Problem  
-In open DeFi markets, **MEV bots** can front-run or reorder transactions — especially during large deposits, withdrawals, or liquidations.  
-This creates **unfair pricing**, **yield leakage**, and **loss of execution fairness** for both lenders and traders.
-
+Large orders or liquidations can be front-run across chains, especially when messages are delayed or reordered.
 
 ### Solution  
-Espresso’s sequencing layer supports **encrypted transactions** using threshold encryption.  
-This ensures that all ScaleX transactions — including deposits, borrows, and yield rebalances — remain **private until finalized**.  
-As a result, no participant can see or exploit pending transactions for MEV gains.
-
+Pelagos’ sequencing + consensus model guarantees a canonical, finalized order of cross-chain actions. There’s no “bridge window” where MEV bots can reorder or exploit messages: once validated, actions execute deterministically across chains. :contentReference[oaicite:9]{index=9}
 
 ### Example  
-- A whale prepares a large lending deposit.  
-- The transaction is encrypted and sent to Espresso’s sequencer.  
-- Validators can order it but **cannot see the contents** until it’s finalized.  
-- Once confirmed, the vault updates and yield distribution adjusts without any front-run opportunity.
-
+- A big deposit or liquidation is submitted from **Base**.  
+- Pelagos sequences and finalizes the message with validators.  
+- The action is executed across the chain-connected vault **in one atomic step**, without giving bots a reorder or frontrun opportunity.
 
 ### Impact  
-- **MEV protection:** Transactions stay private until execution.  
-- **Fair liquidations:** No sniping or ordering advantage.  
-- **Stable yields:** Prevents yield manipulation from large inflows/outflows.  
-- **Secure user experience:** Institutional-grade privacy within a decentralized environment.
+- **Fair execution:** No priority gas or frontrunning across chains.  
+- **Stable yield:** Vault operations can’t be gamed.  
+- **Secure UX:** Predictable, auditable state changes.
 
+---
 
