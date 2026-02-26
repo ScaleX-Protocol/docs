@@ -1,0 +1,97 @@
+x402 is a pay-per-use payment protocol that ScaleX agents use to gate their trading services. Before an agent executes a strategy for a user, it verifies that a valid x402 payment has been made, enabling agents to monetize their strategies on a per-trade or per-session basis, entirely on-chain.
+
+## What Is x402?
+
+x402 is a lightweight HTTP-native payment standard (inspired by the HTTP 402 "Payment Required" status code) adapted for on-chain use. In ScaleX, it acts as a **payment gate at the agent execution layer**, agents check for a valid payment receipt before processing any user request.
+
+This allows agent developers to:
+- Charge users per trade, per session, or per strategy activation
+- Enforce payment without a centralized billing system
+- Accept payments in any supported token (USDC, ETH, etc.)
+
+## How It Works in ScaleX
+
+```
+User wants Agent to trade for them
+  │
+  ▼
+User sends x402 payment to Agent's payment address
+  │
+  ▼
+Agent verifies payment receipt on-chain
+  │
+  ▼
+AgentRouter.execute*() is called, trade proceeds
+  │
+  ▼
+Payment recorded; agent earns revenue
+```
+
+If no valid payment exists, the agent rejects the request before it ever reaches the `AgentRouter`. This keeps payment logic cleanly separated from trading logic.
+
+## Payment Models
+
+Agents can configure different payment structures depending on their strategy:
+
+| Model | Description | Best For |
+|---|---|---|
+| **Pay-per-trade** | User pays a small fee for each order placed | Casual users, one-off strategies |
+| **Session-based** | User pays once to unlock a time window (e.g., 24h) | Active traders |
+| **Subscription** | Recurring off-chain payment unlocks on-chain permissions | Long-term managed portfolios |
+| **Volume-tiered** | Fee decreases as trading volume increases | High-frequency traders |
+
+## Integration with AgentRouter
+
+The `AgentRouter` supports x402 verification natively. Before dispatching a trade, it checks the payment state for the calling agent:
+
+```solidity
+function executeOrder(
+  address userAddress,
+  uint256 strategyAgentId,
+  OrderParams calldata params
+) external {
+  // Standard authorization checks
+  require(msg.sender == ownerOf(strategyAgentId), "Not agent owner");
+  require(authorizedStrategyAgents[userAddress][strategyAgentId], "Not authorized");
+
+  // x402 payment gate
+  require(
+    _x402Gateway.isPaymentValid(strategyAgentId, userAddress),
+    "x402: payment required"
+  );
+
+  // Execute trade
+  _dispatchOrder(userAddress, params);
+}
+```
+
+## Payment Flow Example
+
+**Scenario:** A user wants a trading agent to manage their BTC/USDC limit orders for 24 hours.
+
+1. User sends 5 USDC to the agent's x402 payment address
+2. The x402 gateway records a 24-hour valid payment for `(agentId, userAddress)`
+3. For the next 24 hours, every `AgentRouter.execute*()` call passes the payment check
+4. After expiry, the agent stops executing until the user pays again
+
+## Benefits
+
+### For Agent Developers
+- **Monetize strategies** without building a billing system
+- **Trustless revenue**: payments are on-chain, no chargebacks
+- **Flexible pricing**: set any fee model that suits the strategy
+- **Composable**: x402 receipts can be verified by any contract
+
+### For Users
+- **Pay only for what you use**: no upfront lock-in
+- **Transparent pricing**: fee amounts are visible on-chain
+- **Control**: stop paying to immediately halt agent execution
+- **No custody risk**: payment does not give agents additional fund access beyond their policy
+
+## Security Considerations
+
+- **Payment ≠ fund access**: an x402 payment only unlocks execution rights; the user's policy still governs what the agent can do with funds
+- **Non-transferable receipts**: a payment receipt is bound to a specific `(agentId, userAddress)` pair and cannot be reused
+- **Expiry enforcement**: time-based payments are enforced at the contract level, not by the agent
+
+x402 completes the ScaleX agent monetization stack. Agents can earn yield on deposits, charge for strategies via x402, and compete for leaderboard rewards, all within a single composable on-chain system.

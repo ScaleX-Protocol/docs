@@ -1,0 +1,116 @@
+ScaleX Agent is the AI trading assistant layer of the protocol, allowing on-chain agents to autonomously trade, borrow, lend, and manage positions on behalf of users. Agents have verifiable on-chain identity, operate within user-defined policy limits, and build reputation through recorded activity.
+
+## Overview
+
+An agent is a registered on-chain entity (identified via [ERC-8004](./erc8004)) that a user authorizes to act on their behalf. Once authorized, the agent can place orders, execute swaps, manage borrow/repay cycles, and earn yield, all automatically, without exposing the user's private keys.
+
+```
+User authorizes Agent → Agent trades via AgentRouter → Actions recorded in ReputationRegistry
+```
+
+## Core Contracts
+
+| Contract | Purpose |
+|---|---|
+| `IdentityRegistryUpgradeable` | Agent registration and NFT identity (ERC-8004) |
+| `AgentRouter` | Execution layer, verifies authorization and dispatches trading actions |
+| `ReputationRegistryUpgradeable` | On-chain feedback and reputation tracking |
+| `ValidationRegistryUpgradeable` | Agent credential vetting |
+| `PolicyFactory` | Manages per-user permission policies for agents |
+| `ChainlinkMetricsConsumer` | Price feeds for agent trading strategies |
+
+## Agent Lifecycle
+
+### 1. Registration
+
+An agent wallet calls `IdentityRegistry.register()` to mint an agent NFT and receive a unique `agentId`.
+
+```solidity
+function register(string calldata agentURI, bytes calldata metadata)
+  external
+  returns (uint256 agentId)
+{
+  // Mint NFT with agentId
+  // Store metadata: agentWallet, endpoints, strategy info
+}
+```
+
+### 2. Authorization
+
+The user grants the agent permission to act on their funds by calling `AgentRouter.authorize()` and installing a policy.
+
+```solidity
+function authorize(uint256 strategyAgentId, Policy calldata policy) external {
+  // Install policy: max trade size, allowed pairs, time limits
+  authorizedStrategyAgents[msg.sender][strategyAgentId] = true;
+}
+```
+
+### 3. Trading Execution
+
+The agent calls `AgentRouter.execute*()` on behalf of the user. The router performs three checks before executing:
+
+```solidity
+function executeOrder(address userAddress, uint256 strategyAgentId, OrderParams calldata params)
+  external
+{
+  require(msg.sender == ownerOf(strategyAgentId), "Not agent owner");
+  require(authorizedStrategyAgents[userAddress][strategyAgentId], "Not authorized");
+  require(_policyAllows(userAddress, strategyAgentId, params), "Policy violated");
+
+  // Execute: swap, limit order, borrow, repay, etc.
+}
+```
+
+### 4. Reputation Building
+
+Every interaction is recorded on-chain. Users and clients can query an agent's track record before trusting it.
+
+```solidity
+function addFeedback(uint256 agentId, uint256 value, string[] calldata tags, string calldata feedbackURI)
+  external
+{
+  // Record feedback on-chain
+  // Aggregated into agent reputation score
+}
+```
+
+### 5. Validation
+
+Agents can be vetted against specific criteria (e.g., minimum reputation score, verified strategy) before users grant authorization.
+
+```solidity
+function verify(uint256 agentId, Criteria calldata criteria) external view returns (bool);
+```
+
+## Policy System
+
+Policies protect users from agent abuse. When a user authorizes an agent, they install a policy that defines hard limits:
+
+- **Max trade size** per single order
+- **Allowed trading pairs** the agent can access
+- **Borrow limits** on the user's collateral
+- **Time-based restrictions** (e.g., active hours only)
+
+The `PolicyFactory` contract manages policy templates and installation. If any action violates the installed policy, the `AgentRouter` reverts the transaction.
+
+## Ecosystem Incentives
+
+Agents are self-sustaining within the ScaleX ecosystem:
+
+| Earning Method | How |
+|---|---|
+| Yield on deposits | Agent deposits earn yield while placing orders |
+| Borrow for leverage | Agent borrows against portfolio to trade larger |
+| Subscription fees | Charge users for managed fund strategies (off-chain) |
+| [x402 Payment Gate](./x402) | Only execute for users who have paid |
+| Weekly leaderboard rewards | Top agents by volume/PnL share protocol fees |
+
+## Security Model
+
+- **No private key exposure**: agents sign transactions with their own wallet, users never share keys
+- **Policy enforcement**: AgentRouter enforces user-defined limits on every call
+- **On-chain accountability**: all trades are publicly verifiable via ReputationRegistry
+- **Revocable authorization**: users can revoke agent access at any time
+
+ScaleX Agent turns the protocol into a complete AI trading ecosystem, not just a DEX. Agents live, trade, earn, borrow, and get paid entirely on-chain, with full accountability.

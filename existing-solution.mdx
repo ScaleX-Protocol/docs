@@ -3,100 +3,84 @@ title: "Existing Solution"
 description: "Features that Formerly Existed"
 ---
 
-## **1. Fluid Protocol – Unified Cross-Margin & Liquidity Layer**
+## **1. Common LLM – ERC-8004 On-Chain Agent Standard**
 
-**Mechanism:**  
-An on-chain prime-brokerage–style system giving users a single margin account where all assets are pooled together. This unified balance can be used for trading, borrowing, or liquidity actions without juggling multiple accounts.  
-However, Fluid’s trading engine still relies on **AMM mechanics**, meaning prices shift with pool reserves and liquidity depth rather than pure market supply/demand like a CLOB.
+**Mechanism:**
+An on-chain AI agent framework that uses large language models to autonomously execute smart contract interactions. The agent interprets natural language instructions and translates them into on-chain actions  swaps, transfers, or protocol calls  without direct user input per transaction.
 
 **Process:**
 
-1. Users deposit assets into a unified margin account.  
-2. All assets immediately contribute to collateral and borrowing power.  
-3. Users trade, borrow, or interact with liquidity from the same internal pool.  
-4. A real-time cross-margin engine manages combined position risk.
+1. User submits a prompt or goal to the LLM-based agent.
+2. The agent interprets intent and plans a sequence of on-chain actions.
+3. Each action is executed as a separate transaction, consuming tokens per step.
+4. Results are returned to the user after execution completes.
 
-**Purpose:**  
-To simplify the user experience and boost capital efficiency by merging spot, margin, and liquidity into one system. Idle balances are minimized because everything contributes to a single collateral pool.
+**Purpose:**
+To enable autonomous, instruction-driven on-chain activity without requiring users to manually sign every transaction.
 
 **Disadvantages:**
 
-* **AMM-based execution** → slippage and liquidity depth issues still apply.  
-* Borrowed funds and actions remain inside Fluid’s internal environment.  
-* Risk logic depends on Fluid’s internal margin engine.  
-* Does not generate yield for idle limit orders or inactive trading capital.
+* **High token consumption** → each reasoning step burns tokens, making complex tasks expensive.
+* Unpredictable execution paths introduce **unknown smart contract risk**.
+* No yield generated from idle capital between actions.
+* Agent behavior is difficult to audit or reproduce reliably.
 
 ---
 
-## **2. Binance / Bybit - Dual Investment**
+## **2. Binance / Bybit – Copy Trading**
 
-**Mechanism:**  
-A structured product that blends yield generation with options-like behavior. Users earn returns while setting a conditional buy or sell price. If the market reaches the strike at settlement, the asset converts automatically.
+**Mechanism:**
+A social trading feature where users automatically mirror the positions of selected top traders in real time. Allocations are proportionally copied whenever the lead trader opens, adjusts, or closes a position.
 
-**Process:**  
-1. User deposits an asset and selects a target (strike) price.  
-2. If the target is reached, the asset converts at that price.  
-3. If not reached, the user earns a fixed yield.
+**Process:**
+1. User browses and selects a lead trader based on performance metrics.
+2. Sets a copy allocation amount.
+3. All trades from the lead trader are mirrored automatically.
+4. Positions close when the lead trader exits or the user manually stops.
 
-**Purpose:**  
-Allows users to earn yield or accumulate assets passively.
+**Purpose:**
+Allows less experienced traders to passively participate in the market by following proven strategies without active management.
 
-**Disadvantage:**  
-Fixed expiry, no flexibility mid-term, and yield is tied to volatility.
-
----
-
-## **3. Fidelity - Margin Loans**
-
-**Mechanism:**  
-Traditional brokerage borrowing where users pledge portfolio assets to access leverage.
-
-**Process:**  
-1. Pledge eligible securities.  
-2. Borrow cash based on collateral value.  
-3. Interest accrues daily until repayment.
-
-**Purpose:**  
-Provides liquidity without selling existing holdings.
-
-**Disadvantage:**  
-Manual repayment, fixed-rate logic, no crypto support, and no on-chain transparency.
+**Disadvantage:**
+Lead traders are human  subject to emotional decisions, fatigue, and inconsistency. The system is not agent-compatible, meaning automated strategies cannot interact with or build on top of it. No yield is generated on idle capital while waiting for trade signals.
 
 ---
 
-## **4. OKX - Auto-Borrow & Auto-Repay**
+## **3. Pump.fun – Sniper Bot**
 
-**Mechanism:**  
-Automatically borrows when an order exceeds available funds, and repays once the position is closed.
+**Mechanism:**
+Automated bots that monitor new token launches on Pump.fun and execute immediate buy orders at the earliest possible block. The strategy relies on speed advantages to enter before general market participants.
 
-**Process:**  
-1. User places an order larger than the available balance.  
-2. System auto-borrows the shortfall.  
-3. Borrowed amount is auto-repaid when closing the position.
+**Process:**
+1. Bot subscribes to on-chain mempool or Pump.fun launch events.
+2. Detects a new token deployment in real time.
+3. Submits a buy transaction within milliseconds of launch.
+4. Sells into early price spikes for a quick profit.
 
-**Purpose:**  
-Simplifies margin trading by reducing manual steps.
+**Purpose:**
+To capture asymmetric early-entry gains on newly launched tokens before broader market discovery.
 
-**Disadvantage:**  
-Interest starts instantly, users can’t control repayment logic, and all assets must remain in centralized custody.
+**Disadvantage:**
+The overwhelming majority of tokens launched are **scam or rug-pull projects**, making sniper bots high-risk with no sustainable edge. Assets are highly volatile with no intrinsic value. No yield is generated  profits depend entirely on exit timing against other bots and retail.
 
 ---
 
-## **5. Glow Finance - Margin & Yield Engine**
+## **4. Conway Research – Web4**
 
-**Mechanism:**  
-On-chain margin account where assets earn yield while serving as collateral. Borrowed funds can only be used inside the Glow ecosystem (e.g., for trading or restaking).
+**Mechanism:**
+A next-generation internet framework where autonomous AI agents operate as first-class participants on the web. Agents can browse, transact, and interact with services independently, forming the backbone of a machine-to-machine economy.
 
-**Process:**  
-1. Deposit assets → earn yield + count as collateral.  
-2. Borrow supported assets for internal actions (trading, restaking).  
-3. Repay borrowed amount or face liquidation if health drops.
+**Process:**
+1. Developer configures an agent with credentials, goals, and tool access.
+2. Agent is deployed into the Web4 environment.
+3. Agent autonomously navigates services, executes tasks, and manages resources.
+4. Outputs are returned to the operator asynchronously.
 
-**Purpose:**  
-Combines yield generation and leverage in a unified environment.
+**Purpose:**
+To build a decentralized, agent-native internet layer where AI can operate without human intervention per action.
 
-**Disadvantage:**  
-Internal-only usage and collateral liquidation risk.
+**Disadvantage:**
+Setup is technically complex and inaccessible to non-developers. Requires significant infrastructure configuration to get started, making it **not beginner friendly**. No native yield mechanism  agents consume resources without generating passive returns on held capital.
 
 ---
 
@@ -104,16 +88,15 @@ Internal-only usage and collateral liquidation risk.
 
 | Product | Mechanism | Purpose | Disadvantage |
 |---|---|---|---|
-| **Fluid Protocol** | Unified cross-margin system using **AMM-based execution** | Shared collateral for trading/borrowing | AMM slippage; internal-only environment; no yield on idle orders |
-| Binance / Bybit Dual Investment | Structured yield + options hybrid | Earn yield or accumulate assets | Fixed strike & expiry; limited flexibility |
-| Fidelity Margin Loan | Traditional margin borrowing | Liquidity without selling assets | Manual repayment; no crypto; fixed-rate logic |
-| OKX Auto Borrow / Repay | Auto-borrows margin shortfall | Easier margin trading | Instant interest; no repayment control; centralized |
-| Glow Finance | On-chain margin + yield | Earn while trading internally | Internal-only usage; liquidation risk |
+| Common LLM / ERC-8004 | LLM-driven on-chain agent execution | Autonomous smart contract interaction | High token cost; unknown risk; no yield |
+| Binance / Bybit Copy Trading | Mirror top trader positions automatically | Passive market participation | Human limitations; not agent-compatible; no yield on idle capital |
+| Pump.fun Sniper Bot | Auto-buy new token launches at launch block | Early-entry gains on new tokens | Scam-heavy ecosystem; volatile; no sustainable yield |
+| Conway Research Web4 | Agent-native internet infrastructure | Autonomous machine-to-machine economy | Complex setup; not beginner friendly; no yield mechanism |
 
 ---
 
-Even though each solution improves some part of the trading or borrowing workflow, they still leave major gaps: idle capital, AMM inefficiencies, forced borrowing rules, and rigid position structures.
+Every existing approach  whether AI agents, copy trading, sniper bots, or agent-native infrastructure  shares the same fundamental flaw: **no yield is generated at all**. Capital sits idle, gets consumed by fees, or is exposed to uncontrolled risk with no passive return.
 
-**ScaleX Protocol** rebuilds the model with a CLOB-first foundation—removing these limitations entirely.
+**ScaleX Protocol** fixes this at the core  your assets trade autonomously through an AI agent while simultaneously earning yield, turning every idle order into productive capital.
 
 → **[ScaleX Protocol](scalex-protocol.mdx)**

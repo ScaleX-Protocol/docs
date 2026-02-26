@@ -19,8 +19,7 @@
               "genesis-story",
               "existing-solution",
               "scalex-protocol",
-              "lesson-learned",              
-              "benchmarkings"
+              "lesson-learned"
             ]
           },
             {
@@ -31,7 +30,10 @@
               "architecture/synthetic-token",
               "architecture/orderbook",
               "architecture/oracle",
-              "architecture/lending-manager"
+              "architecture/lending-manager",
+              "architecture/agent",
+              "architecture/erc8004",
+              "architecture/x402"
             ]
           }
         ]

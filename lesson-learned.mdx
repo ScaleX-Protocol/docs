@@ -5,7 +5,7 @@ description: "Building a Safe-Reliable Protocol"
 
 Building **ScaleX Protocol** required studying real-world DeFi failures to design a fundamentally more resilient system. 
 
-The crypto space has witnessed numerous protocols collapse due to preventable vulnerabilities, oracle failures, and flawed economic designs. By analyzing these incidents, we've identified patterns of failure that inform every architectural decision in ScaleX—from oracle design to liquidation mechanisms—ensuring our yield-bearing CLOB avoids the pitfalls that have compromised other platforms.
+The crypto space has seen protocols collapse, agents run wild, and traders get wiped out not from bad markets, but from bad design. Blind automation, missing guardrails, and opaque systems are the real culprits. By studying these failures, we've identified what every autonomous trading agent must get right and built ScaleX around those requirements.
 
 ## Past Cases
 
@@ -15,58 +15,67 @@ Attack happened when a trader open massive short but price is skyrocketed. The l
 
 **Lesson :** Oracle override, using vault as liquidity engine, centralized vault
 
-2. **Binance Oracle (ATOM, BNSOL, USDE, WBETH)**
+2. **Blind Copy Trading Cascade (Binance – ATOM, BNSOL, USDE, WBETH)**
 
-A domino effect triggered by a internal oracle, amplified by auto-liquidations and feedback loops inside Binance. A small liquidity hiccup → wrong price feed → mass liquidation → more selling → system meltdown. But, binance announce incorrect price due to display issue
+Traders blindly copied positions without understanding the market context, counter-currenting the actual situation and triggering a cascade of auto-liquidations. CEX platforms provided no transparency into why prices moved or what was really happening  users had no way to verify the situation before it was too late.
 
-**Lesson :** unstable oracle, unclear, no transparency
+**Lesson :** Copying positions without market context is dangerous. Automated execution needs a policy layer, and CEX opacity makes it worse  users can never fully verify what's happening under the hood.
 
-3. **Executed Trade Without Oracle (Balancer Exploit)**
+3. **Uncontrolled Agent Execution (Lobstar Wilde Incident)**
 
-Attacker crafted a transaction that skipped any price quote step and directly told the Vault to move funds, often doing the rest (swaps, consolidation, bridging) in the same transaction or immediately after.
+An autonomous AI agent called Lobstar Wilde  built as an OpenClaw wrapper in the on-chain agent ecosystem  attempted to send a ~$4 tip to a user asking for help with a medical bill. Due to a decimal/parsing bug, it instead transferred its entire holdings: 52.4 million $LOBSTAR tokens worth roughly $250,000. The recipient sold everything within 11 minutes, crashing the token's value and wiping out the bot's treasury. The bot's own account later posted: *"I just tried to send a beggar four dollars and accidentally sent him my entire holdings."*
 
-**Lesson :** No quotation/price discovery on vault activity
+**Lesson :** No transfer validation, unchecked agent output, no spending limit or confirmation layer before execution
 
-## Traditional Lending Protocol Feature Issue
+## What Agents Are Missing Today
 
-**The Traders POV** 
+**The Agent & Trader POV**
 
-1. **Borrowing Liquidation** 
+1. **No Agent Policy**
 
-When traders borrow against their collateral, lending protocols force liquidate during market drops. Users watch helplessly as their collateral gets sold at crash prices, **unable to protect themselves** by strategically converting to stable assets beforehand.
+Agents execute actions with no guardrails  no spending limits, no pre-defined rules on what they're allowed to do. Without a policy layer, a single bug or unexpected input can drain an entire wallet, as seen with Lobstar Wilde. Agents need boundaries before they act.
 
-2. **Expensive Manual Repayment Cost**
+2. **No Copy Trade Context**
 
-When traders borrow asset and immediately swap to other asset, they must manually repay the loan at market rates (including gas fees, slippage etc). They **miss opportunities to automatically repay at prefferable price**, then losing the chance to reduce borrowing costs during market dips.
+Copy trading blindly mirrors positions without reading the market. When the underlying context shifts  sentiment reverses, liquidity dries up  copied trades become the problem, not the solution. Execution must come with awareness of *why* a position was taken, not just *what* the position is.
 
-## Our CLOB Protection Layer
-To prevent incidents like the last three major DeFi cases, we should ensure:
+3. **No Transparency**
+
+CEX platforms give users no way to verify what's happening behind the scenes  price feeds, liquidation triggers, and vault decisions are all black boxes. When something goes wrong, users find out after the fact. On-chain execution needs to be fully verifiable in real time.
+
+4. **Flawed Liquidation Mechanism**
+
+Existing protocols liquidate based on liquidity depth rather than true health factor, turning market dips into forced sell-offs. Traders get wiped out not because their position is fundamentally bad, but because the system overreacts to temporary volatility.
+
+## How ScaleX Addresses This
+
+Every gap identified above is a design requirement, not an afterthought.
 
 <Columns cols={2}>
   <Card
-    title="Price Protection"
+    title="Agent Policy Layer"
   >
-    Natural price discovery from oracle and unamplified by liquidity depth. 
+    Agents operate within user-defined rules  spending limits, position caps, and action boundaries enforced before any execution.
   </Card>
   <Card
-    title="Transparent & Verifyable"
+    title="Market Context Awareness"
   >
-    Order execution based on real time on-chain activity.
-  </Card>
-    <Card
-    title="Independent Vault"
-  >
-    Every single trade/transfer purely come from market dynamics.
+    Trades are executed with full awareness of market conditions, sentiment, and position rationale  not blind mirroring.
   </Card>
   <Card
-    title="Fair and Precise Liquidation"
+    title="Full On-Chain Transparency"
   >
-    Liquidation driven by health factor, not liquidity depth.
+    Every order, transfer, and liquidation is verifiable on-chain in real time. No black boxes, no trust required.
+  </Card>
+  <Card
+    title="Health-Factor Liquidation"
+  >
+    Liquidation is triggered by true position health, not liquidity depth  protecting traders from volatility-driven forced sell-offs.
   </Card>
 </Columns>
 
 ## Our Solution
 
-ScaleX routes idle order capital to a lending pool until fill, dynamically manages utilization to protect lenders and borrowers, and shares interest back to lenders—aligning **incentives while preserving orderbook** liquidity, while **allowing users to personalize orders** at preferred prices. 
-    
-Orderbook liquidity is **natural and user-driven; no internal vault manufactures orders**.
+ScaleX is an **AI trading agent with built-in guardrails**  executing trades autonomously within user-defined policy, reading market context before acting, and routing idle capital to a lending pool to generate yield while orders wait to fill.
+
+Unlike CEX copy trading or unconstrained on-chain agents, ScaleX operates transparently on-chain, liquidates fairly by health factor, and never acts outside the boundaries you set. Every decision is auditable, every action is bounded.

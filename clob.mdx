@@ -8,13 +8,13 @@ description: "The Natural Liquidity Resource."
 The **Central Limit Order Book (CLOB)** constitutes the protocol’s principal market coordination layer, responsible for orchestrating liquidity and facilitating transparent price formation.  
 It maintains an ordered ledger of outstanding bids and asks, dynamically updating as market participants submit, amend, or cancel orders in real time.
 
-In contrast to automated market maker (AMM) architectures that employ algorithmic pricing curves, the CLOB mechanism enables participants to express explicit intent — defining both price and quantity — thereby enabling deterministic execution and granular control over order placement.  
+In contrast to automated market maker (AMM) architectures that employ algorithmic pricing curves, the CLOB mechanism enables participants to express explicit intent  defining both price and quantity  thereby enabling deterministic execution and granular control over order placement.  
 This structure delivers enhanced capital efficiency, precise price discovery, and minimal execution slippage, particularly suited for advanced market participants and professional liquidity providers.
 
 ## Conceptual Significance
 
 The CLOB framework extends beyond a simple matching engine; it forms the **deterministic execution substrate** underpinning the protocol’s broader financial system.  
-By integrating on-chain order management with vault-based collateralization, the CLOB harmonizes order-driven liquidity with DeFi composability — bridging traditional exchange mechanisms and decentralized capital markets.
+By integrating on-chain order management with vault-based collateralization, the CLOB harmonizes order-driven liquidity with DeFi composability  bridging traditional exchange mechanisms and decentralized capital markets.
 
 This architecture ensures:
 
@@ -34,7 +34,7 @@ Each incoming order undergoes deterministic matching and settlement according to
 4. **Atomic Settlement:** Transfers occur via the protocol’s vault infrastructure, ensuring composability with yield and collateral layers.  
 5. **Persistence:** Residual orders remain queued within the book until explicitly canceled or fulfilled.
 
-This sequence operates entirely on-chain, yielding a fully auditable and deterministic state transition model — free from off-chain dependencies or opaque intermediaries.
+This sequence operates entirely on-chain, yielding a fully auditable and deterministic state transition model  free from off-chain dependencies or opaque intermediaries.
 
 ## Integration within the Protocol Architecture
 

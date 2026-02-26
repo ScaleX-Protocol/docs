@@ -3,69 +3,66 @@ title: "ScaleX Protocol"
 description: "Revolutionary Yield-Bearing CLOB Protocol"
 ---
 
-# Welcome to ScaleX Protocol 
-# "A Revolutionary Yield-Bearing CLOB"
+# Welcome to ScaleX Protocol
+# "Your Private Trading Assistant Ecosystem"
 
-ScaleX Protocol is **a revolutionary CLOB that automatically generates yield on idle limit orders**. Users can earn yield while executing trading strategies with customized prices - no more choosing between trading opportunities and passive income.  
-
-We enable yield gains to users trading activity. No matter in a losing or winning position without expiry date
-
-
-## Lending Protocol Instead of Conventional Staking
-
-Unlike traditional staking, where assets are locked and idle, lending protocols keep assets productive and liquid.  
-
-Lenders can earn yield while maintaining access to capital, allowing them to reuse or withdraw anytime without waiting for an unstaking period.  
-
-At the same time, borrowers can customize leverage, position sizing, and strategy, optimizing cost and capital efficiency.  
-
-This creates a both-sided advantage, lenders **maximize utilization** of idle funds, while borrowers **reduce transaction friction** by sourcing liquidity directly from the protocol instead of hopping between pools.
+You've seen the problem. Capital sitting idle in orders. Missed entries at 3AM. The ecosystem forcing you to choose between trading and earning. ScaleX gives you a private trading assistant  an agent that works for you around the clock, backed by infrastructure that keeps every dollar productive while it does.
 
 ---
+
+## Architecture 1  The Agent
+
+You shouldn't have to watch the screen for your strategy to work.
+
+ScaleX agents are built on **[ERC-8004](./architecture/erc8004)** on-chain identity. You authorize one, set your rules, and it handles the rest. It places your limit orders, manages borrow and repay cycles, protects your positions from liquidation, and monitors the market 24/7. No emotion. No fatigue. No missed entries.
+
+You stay in control. The agent can only act within the policy you define. No private keys shared. No custody risk. If you want it to stop, you revoke authorization and it stops.
+
+**What the agent does for you:**
+- Places and manages limit orders at your target prices
+- Borrows and repays automatically at optimal conditions
+- Protects positions from liquidation using pre-set orders
+- Builds an on-chain reputation you can verify before trusting it
+
+---
+
+## Architecture 2  The Yield-Bearing DEX
+
+The agent needs an engine that never lets your capital go idle. That's what the Yield-Bearing DEX does.
+
+---
+
 ## Why CLOB DEX and Lending Protocol are a perfect duo
 
-Central Limit Order Book (CLOB) DEXes match limit orders. While orders wait in the book, they **do not earn yield**.  
-Lending protocols continuously generate interest based on utilization. When combined, **idle capital can earn yield** until an order is filled, and borrowing demand increases utilization, reinforcing the **flywheel**.
+A CLOB DEX matches limit orders. While those orders sit in the book waiting to fill, **they earn nothing**. A lending protocol generates interest continuously based on utilization. Put them together and every order waiting in the book becomes capital that earns yield until it executes.
+
+This is the engine the agent runs on. Every dollar it manages is either actively trading or quietly earning. There is no in-between.
 
 Here is the flow at a glance:
 
 ![Perfect Duo Flow](images/perfect-duo-flow.png)
 
-**Yield Opportunity Attracts Deposits**
+1. **Yield Opportunity Attracts Deposits**  traders deposit assets drawn by yield, even before any orders fill
+2. **Low Utilization Attracts Borrowers**  cheap borrowing rates pull in leveraged traders wanting liquidity
+3. **Borrowing Raises Utilization**  borrow activity increases pool utilization, activating higher interest accrual
+4. **Interest Pays Lenders**  borrower interest flows back as yield to the lenders whose capital powers the system
+5. **Repay and Reborrow Cycle Deepens Liquidity**  continuous repay and reborrow actions add dynamic depth to the orderbook and stabilize market flow
 
-Traders are drawn to the platform by its yield-bearing mechanism, depositing assets into the pool even before orders are filled
-
-**Low Utilization Attracts Borrowers**
-
-When utilization is low, borrowing is attractive, drawing in traders who want leverage and liquidity
-
-**Borrowing Raises Utilization**
-
-Borrow activity increases utilization of the lending pool, activating higher interest accrual
-
-**Interest Pays Lenders**
-
-Borrowers pay interest, which is distributed as yield to lenders whose capital powers the system
-
-**Active Repay and Reborrow Cycle Enhances Depth**
-
-Borrowers continuously execute repay and reborrow actions to maintain or increase positions, adding dynamic liquidity depth to the orderbook and stabilizing market flow.
-
-So, CLOB-DEX are **perfect to continuously generate yield on idle capital while order to be filled**
+The agent is what puts this flywheel in motion on your behalf.
 
 ---
 
 ## How ScaleX Solves Existing Limitations
 
-While existing tools streamline certain aspects of trading and borrowing, they still leave users exposed to inefficiencies like forced borrowing, idle capital, or rigid repayment logic.  
+Every tool before ScaleX solved part of the problem. Copy trading removed decision-making but kept human flaws. Sniper bots automated entries but had no safety or yield. LLM agents acted autonomously but with no guardrails and no passive return. None of them gave you an agent you could trust, running on infrastructure that keeps capital productive at all times.
 
-**ScaleX** integrates these ideas into a single, yield-optimized system — merging liquidity, leverage, and automation into one composable DeFi architecture.
+ScaleX combines the Agent and the Yield-Bearing DEX into one system. The assistant that trades for you is also running on infrastructure that never lets your capital go idle. No switching between protocols. No choosing between trading and earning.
 
 ###  Comparison with Existing Solutions
 
-| Feature | Existing Limitation | ScaleX Solution |
+| Product | Why It Fell Short | ScaleX Solution |
 |---|---|---|
-| Dual Investment Products | Fixed settlement price and expiry | **No expiry**, **continuous yield**, and **customizable target** for flexible management |
-| Margin Loans | No automation and crypto support | **on-chain transparency**, **crypto assets supported**, and **programmable repayment** |
-| Auto Borrow / Repay | Interest accrues instantly; fixed repayment logic | **Customizable borrow and repay parameters** — no forced size reduction, no idle interest |
-| On-chain Yield Engines | Internal-only usage restrictions | **External asset compatibility** and **cross-protocol composability** |
+| Common LLM / ERC-8004 | Unpredictable execution, high token cost, no yield, hard to audit | **Policy-bound agent** with on-chain identity, verifiable reputation, and capital earning yield between actions |
+| Binance / Bybit Copy Trading | Copies human flaws, not agent-compatible, idle capital while waiting | **Automated agent** with no emotion or fatigue, earning yield on capital at all times |
+| Pump.fun Sniper Bot | Scam-heavy, no safety, no yield, race-to-bottom against other bots | **Strategy-driven agent** with risk limits, transparent execution, and continuous yield |
+| Conway Research Web4 | Developer-only setup, no yield mechanism, agents consume without earning | **Accessible agent** anyone can authorize, running on a yield-bearing DEX that keeps capital productive |

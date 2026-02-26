@@ -1,10 +1,10 @@
 ![Unified CLOB DEX-Lending Protocol Architecture](/images/architecture.png)
 
-The Unified CLOB DEX-Lending Protocol integrates trading and lending through five core components that work together to maximize capital efficiency.
+The ScaleX AI trading assistant is built on a unified CLOB DEX-Lending Protocol, eight core components that work together to maximize capital efficiency and enable autonomous agent-driven trading.
 
 ## Core Components
 
-The protocol operates through five integrated components:
+The protocol operates through eight integrated components:
 
 1. **[Balance Manager](./balance-manager)** - Maintains 1:1 peg, tracks yields, and issues synthetic tokens when users deposit assets
 
@@ -15,3 +15,9 @@ The protocol operates through five integrated components:
 4. **[Oracle](./oracle)** - Multi-timeframe TWAP oracle providing manipulation-resistant pricing for trading, borrowing, and collateral valuation
 
 5. **[Lending Manager](./lending-manager)** - Generates yield from real assets through native lending protocol with integrated order book access
+
+6. **[Agent](./agent)** - AI trading assistant layer, on-chain agents that autonomously trade, borrow, and earn yield on behalf of users within policy-defined limits
+
+7. **[ERC-8004](./erc8004)** - On-chain identity standard that gives every agent a verifiable NFT identity, enabling accountability, reputation, and cross-protocol interoperability
+
+8. **[x402](./x402)** - Pay-per-use payment gate that allows agents to monetize their trading strategies per trade, per session, or by subscription

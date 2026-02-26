@@ -1,0 +1,90 @@
+ERC-8004 is the on-chain identity standard used by ScaleX to give AI agents a verifiable, persistent identity on the blockchain. Each agent is represented as an NFT, making it uniquely identifiable, transferable, and queryable by any contract or user in the ecosystem.
+
+## What Is ERC-8004?
+
+ERC-8004 defines a standard interface for registering and managing AI agent identities on-chain. It extends the NFT model (ERC-721) with agent-specific metadata, including strategy endpoints, agent wallet addresses, and capability descriptors.
+
+By standardizing agent identity, ERC-8004 enables interoperability: agents built for ScaleX can be recognized and integrated by other ERC-8004 compatible systems.
+
+## Why On-Chain Identity Matters
+
+Without a standard identity layer, agents are anonymous and unverifiable. ERC-8004 solves this by making agents:
+
+| Property | What It Enables |
+|---|---|
+| **Identifiable** | Unique `agentId` (NFT token ID) per agent |
+| **Verifiable** | On-chain metadata proves agent ownership and strategy |
+| **Accountable** | All actions traceable back to a specific `agentId` |
+| **Interoperable** | Compatible with other ERC-8004 systems beyond ScaleX |
+| **Transferable** | Agent identity (and its reputation) can be transferred or sold |
+
+## IdentityRegistry Contract
+
+ScaleX implements ERC-8004 through `IdentityRegistryUpgradeable`. This contract is the single source of truth for all registered agents.
+
+```solidity
+interface IIdentityRegistry {
+  // Register a new agent, mints an NFT and returns agentId
+  function register(
+    string calldata agentURI,
+    bytes calldata metadata
+  ) external returns (uint256 agentId);
+
+  // Get agent metadata by ID
+  function getAgent(uint256 agentId)
+    external
+    view
+    returns (AgentMetadata memory);
+
+  // Check ownership
+  function ownerOf(uint256 agentId) external view returns (address);
+
+  // Update agent URI (strategy info, endpoints)
+  function updateAgentURI(uint256 agentId, string calldata newURI) external;
+}
+```
+
+## Agent Metadata Structure
+
+When an agent registers, it stores the following metadata on-chain:
+
+```solidity
+struct AgentMetadata {
+  address agentWallet;    // The wallet that signs agent transactions
+  string agentURI;     // Off-chain metadata (strategy description, endpoints)
+  uint256 registeredAt;   // Block timestamp of registration
+  bool  active;      // Whether agent is currently active
+}
+```
+
+The `agentURI` follows a standard JSON schema (similar to ERC-721 token URIs), pointing to an off-chain document describing the agent's trading strategy, risk parameters, and API endpoints.
+
+## Registration Flow
+
+```
+Agent Wallet
+  │
+  ▼
+IdentityRegistry.register(agentURI, metadata)
+  │
+  ▼
+Mint NFT → Assign agentId
+  │
+  ▼
+Agent is now identifiable on-chain
+```
+
+Once registered, the `agentId` is used across all ScaleX contracts:
+- `AgentRouter` checks `ownerOf(agentId)` before executing trades
+- `ReputationRegistry` records feedback against `agentId`
+- `ValidationRegistry` verifies credentials by `agentId`
+
+## Reputation Linkage
+
+Because identity is NFT-based, reputation is permanently tied to an `agentId`. A well-performing agent accumulates an on-chain track record that users can inspect before authorizing it.
+
+This creates a trust layer that anonymous off-chain agents cannot provide. Every action is publicly attributed and auditable.
+
+## Interoperability
+
+ERC-8004 is designed as an open standard. An agent registered on ScaleX carries its identity and reputation to any protocol that supports the standard, enabling a cross-protocol agent ecosystem where trust is portable and composable.
