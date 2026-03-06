@@ -12,7 +12,7 @@ You've seen the problem. Capital sitting idle in orders. The ecosystem forcing y
 
 ## Architecture 1  The Agent
 
-You shouldn't have to watch the screen for your strategy to work.
+You don't have to watch the screen for your strategy to work — but the capital efficiency works the same whether you do or not.
 
 ScaleX agents are built on **[ERC-8004](./architecture/erc8004)** on-chain identity. You authorize one, set your rules, and it handles the rest. It places your limit orders, manages borrow and repay cycles, protects your positions from liquidation, and monitors the market 24/7. No emotion. No fatigue. No missed entries.
 
@@ -28,7 +28,7 @@ You stay in control. The agent can only act within the policy you define. No pri
 
 ## Architecture 2  The Yield-Bearing DEX
 
-The agent needs an engine that never lets your capital go idle. That's what the Yield-Bearing DEX does.
+The core of ScaleX is a Yield-Bearing DEX — an engine that never lets your capital go idle. Whether you're using an agent or trading manually, every dollar earns automatically.
 
 ---
 
@@ -48,15 +48,15 @@ Here is the flow at a glance:
 4. **Interest Pays Lenders**  borrower interest flows back as yield to the lenders whose capital powers the system
 5. **Repay and Reborrow Cycle Deepens Liquidity**  continuous repay and reborrow actions add dynamic depth to the orderbook and stabilize market flow
 
-The agent is what puts this flywheel in motion on your behalf.
+Every user — human or agent — contributes to and benefits from this flywheel.
 
 ---
 
 ## How ScaleX Solves Existing Limitations
 
-Every tool before ScaleX solved part of the problem. Copy trading removed decision-making but kept human flaws. Sniper bots automated entries but had no safety or yield. LLM agents acted autonomously but with no guardrails and no passive return. None of them gave you an agent you could trust, running on infrastructure that keeps capital productive at all times.
+Every tool before ScaleX solved part of the problem. Order book DEXes gave execution but left capital idle. Lending protocols gave yield but locked capital out of trading. Copy trading and bots automated actions but had no safety, no yield, and no accountability. None of them made capital work at maximum efficiency.
 
-ScaleX combines the Agent and the Yield-Bearing DEX into one system. The assistant that trades for you is also running on infrastructure that never lets your capital go idle. No switching between protocols. No choosing between trading and earning.
+ScaleX combines the Yield-Bearing DEX and the Agent into one system — where capital never stops working and you never have to choose between trading, betting, and earning.
 
 ###  Comparison with Existing Solutions
 
